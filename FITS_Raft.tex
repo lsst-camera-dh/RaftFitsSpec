@@ -20,12 +20,14 @@
 % Line number every fifth line
 %\modulolinenumbers[5]
 %\linenumbers
-%\usepackage{fullpage}
+
 \usepackage[top=1in, bottom=1.25in, left=0.75in, right=0.75in]{geometry}
 
 \usepackage[T1]{fontenc}
 \renewcommand*\rmdefault{ptm}
 
+\usepackage{listings}
+\usepackage{url}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -34,6 +36,8 @@
 \fancyhead[LO,LE]{LCA-13501}
 \fancyhead[CO,CE]{FITS Format Specification for Science Rafts}
 \fancyhead[RO,RE]{Page \thepage~of XX}
+
+\usepackage{alltt}
 
 % Title page 
 \title{Specification for FITS Image Files from Raft and Focal Plane-Level Electro-Optical Tests}
@@ -45,21 +49,27 @@
 \tableofcontents
 
 \section{Change History}
-Initial draft in progress
+Initial draft in progress.  The source for this draft is maintained at \url{https://github.com/lsst-camera-dh/RaftFitsSpec}.
 
-\section{Scope}This document describes the naming, organization, and formats of the FITS files from Science Raft-level and focal plane-level (i.e., more than one raft) electro-optical tests.  The definitions of other data products related to raft and focal plane-level metrology will be described elsewhere.
+\section{Scope}
+This document describes the naming, organization, and formats of the FITS files from Science Raft-level and focal plane-level (i.e., more than one raft) electro-optical tests.  The definitions of other data products related to raft and focal plane-level metrology will be described elsewhere.
 
 \section{Acronyms}
 
 \section{References}
 
 [1] LCA-10140 Specification for FITS Images from Electro-Optical Tests
-\section{Introduction}Raft-level images will be generated with Test Stand 8 (TS8).  Focal plane-level images will be generated with the Bench for Optical Testing (BOT).  BNL and SLAC will each have a TS8.  The BOT will be at SLAC.  The specifications in this document are to ensure portability of the image data products across sites, to provide a well-defined common interface for the analysis scripts, to define pixel coordinate keywords for image assembly by display tools (specifically ds9 and Firefly), and to facilitate curation of raft and camera test data.
-As for sensor acceptance testing, raft and focal plane-level image files will be used for any of a variety of analyses, depending on the set-up of the test stands, including Flat Field Exposures, Pocket-Pumping Exposures, Dark Integrations, Fe-55 X-ray Exposures, Wavelength Scan, Superflat Images, Spot Imaging Exposures, Readout System Noise Images, and Readout System Crosstalk Images.The format specifications of the image files from these tests are very similar but some tests have test-specific keywords.  
+
+\section{Introduction}
+Raft-level images will be generated with Test Stand 8 (TS8).  Focal plane-level images will be generated with the Bench for Optical Testing (BOT).  BNL and SLAC will each have a TS8.  The BOT will be at SLAC.  The specifications in this document are to ensure portability of the image data products across sites, to provide a well-defined common interface for the analysis scripts, to define pixel coordinate keywords for image assembly by display tools (specifically ds9 and Firefly), and to facilitate curation of raft and camera test data.
+
+As for sensor acceptance testing, raft and focal plane-level image files will be used for any of a variety of analyses, depending on the set-up of the test stands, including Flat Field Exposures, Pocket-Pumping Exposures, Dark Integrations, Fe-55 X-ray Exposures, Wavelength Scan, Superflat Images, Spot Imaging Exposures, Readout System Noise Images, and Readout System Crosstalk Images.
+The format specifications of the image files from these tests are very similar but some tests have test-specific keywords.  
 
 The specifications of the file and directory naming conventions, and of the FITS headers derive from the corresponding specifications in LCA-10103 for single sensor testing.
 
-\section{File Naming and Directory Structure}Considerations of human readability, data curation, and automated processing motivate specification of conventions for naming and organization of the image files.
+\section{File Naming and Directory Structure}
+Considerations of human readability, data curation, and automated processing motivate specification of conventions for naming and organization of the image files.
 
 \subsection{Directory Structure}
 
@@ -82,7 +92,13 @@ with one or more subdirectory named for the rafts in the measurements.
 
 \section{Internal File Organization}
 
+\section{Example Headers}
 
+\subsection{Primary Header}
+
+\begin{alltt}
+\input{primary_header.txt}
+\end{alltt}
 
 \end{document}
 
