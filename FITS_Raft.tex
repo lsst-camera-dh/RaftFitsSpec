@@ -8,6 +8,7 @@
 % Graphics and colors
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{color}
 
 % disable subsubsections in the TOC
 %\makeatletter
@@ -42,6 +43,11 @@
 % Title page 
 \title{Specification for FITS Image Files from Raft and Focal Plane-Level Electro-Optical Tests}
 
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\blue}{\textcolor{blue}}
+\definecolor{darkgreen}{rgb}{0.0, 0.7, 0.0}
+\newcommand{\green}{\textcolor{darkgreen}}
+
 % Body of the document
 \begin{document}
 
@@ -49,7 +55,9 @@
 \tableofcontents
 
 \section{Change History}
-Initial draft in progress.  The source for this draft is maintained at \url{https://github.com/lsst-camera-dh/RaftFitsSpec}.
+Initial draft in progress.  \red{Issues for discussion are highlighted in red.}
+
+The source for this draft, including ASCII versions of the example headers, is maintained at \url{https://github.com/lsst-camera-dh/RaftFitsSpec}.
 
 \section{Scope}
 This document describes the naming, organization, and formats of the FITS files from Science Raft-level and focal plane-level (i.e., more than one raft) electro-optical tests.  The definitions of other data products related to raft and focal plane-level metrology will be described elsewhere.
@@ -60,7 +68,13 @@ This document describes the naming, organization, and formats of the FITS files 
 
 [1] LCA-10140 Specification for FITS Images from Electro-Optical Tests
 
+\noindent{[2] LSST-1614 LSST Camera Coordinate and Numbering Systems}
+
+\noindent{FITS standards, references, and resources are collected here:  \url{http://fits.gsfc.nasa.gov}.}
+
 \section{Introduction}
+This document extends the definition of formats and naming conventions for single-sensor image files [1] to images taken at the raft level (i.e., nine sensors), or collections of rafts up to the entire focal plane.  As for single sensors, the image files will be in FlTS format, long in widespread use in astronomy.  The FITS standard is well defined and many i/o libraries and tools exist to read, write, manipulate, and display data stored in FITS format.  The format consists of keyword-value pairs in ASCII headers together with (typically) binary image data or tables.  A header and associated data are together called a Header Data Unit, and a FITS file can contain any number of these.
+
 Raft-level images will be generated with Test Stand 8 (TS8).  Focal plane-level images will be generated with the Bench for Optical Testing (BOT).  BNL and SLAC will each have a TS8.  The BOT will be at SLAC.  The specifications in this document are to ensure portability of the image data products across sites, to provide a well-defined common interface for the analysis scripts, to define pixel coordinate keywords for image assembly by display tools (specifically ds9 and Firefly), and to facilitate curation of raft and camera test data.
 
 As for sensor acceptance testing, raft and focal plane-level image files will be used for any of a variety of analyses, depending on the set-up of the test stands, including Flat Field Exposures, Pocket-Pumping Exposures, Dark Integrations, Fe-55 X-ray Exposures, Wavelength Scan, Superflat Images, Spot Imaging Exposures, Readout System Noise Images, and Readout System Crosstalk Images.
@@ -75,7 +89,7 @@ Considerations of human readability, data curation, and automated processing mot
 
 The directory structure for raft-level measurements is designed to extend from measurements with single rafts (in TS8) to entire focal planes (with the BOT).  The naming convention is:
 
-{\bf rafts/<institution>/<test type>/<job ID>/}
+{\bf rafts/<institution>/<test type>/<job ID>/sraft\#\#}
 
 with one or more subdirectory named for the rafts in the measurements.  
 
@@ -85,20 +99,118 @@ with one or more subdirectory named for the rafts in the measurements.
 {\bf <institution>} & Either {\bf bnl} or {\bf slac} \\
 {\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
 {\bf <job ID>} & Job ID number assigned by the Job Harness \\
+{\bf sraft<\#\#>} & Designator of the science raft (\#\# = 01--22) \\
 \hline
 \end{tabular}
 
+{\bf Use the same designators for test type as in the EO test directories?}
+
+These directories may contain subdirectories, perhaps depending on the test type...
+
+
 \subsection{File Names}
 
+The file names for a given sensor, test type, and processing step shall be of the form%<sensor id>_<test type>_<image type>_<seq. info>_<time stamp>.fits
+<sensor id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits\begin{tabular}{| l | l |}
+\hline
+{\bf <sensor id>} & {\bf s{\tt \#\#}}, where {\tt \#\#} are the coordinates of the sensor in the raft, 0--2, as defined in [2] \\
+{\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
+{\bf <image type>} & One of dark, fe55, flat, lambda, spot, sflat\_nnn [where nnn is the wavelength in nm], or trap<image type> is one of bias, dark, or fe55 \\
+{\bf <seq. info>} & Normally a 3-digit sequence number such as 000, 001, 002.  Photon Transfer Curve data (pairs of flats) shall have exposure times and flat1/flat2 designators, e.g., 0010.0s\_flat1 \\
+{\bf <time stamp>} & A string of the form YYYYMMDDHHMMSS recording the year, month, day, hour, minute, and second (UTC) of the start of the data acquisition for the image. \\
+\hline
+\end{tabular}
+
 \section{Internal File Organization}
+
+The image files are multiple-extension FITS files with basic (not site-specific) information in the primary header, then 16 image extensions (one per segment), followed by test condition, CCD operating condition, and site-specific extension(s).  For the latter, examples are given here but are not formally part of the specification.  N.B.: The analysis scripts should not depend on information in the site-specific extensions.
+
+\subsection{Image Extensions}
+
+The naming of the segments is defined in [2].  Each segment has a 2-digit designator, and these are incorporated in the {\tt EXTNAME} keyword strings as indicated in the example header below.
+
+The headers of the image extensions also define the pixel coordinate systems for the segments, sensors, and rafts.  These use a combination of NOAO Mosaic keyword conventions as in [1] and FITS World Coordinate System (WCS) definitions (ref).  The definitions specify which regions of the segments are pre-scan and over-scan regions.  (For TS8 a focal-plane level definition of the pixel coordinates is not needed.)
 
 \section{Example Headers}
 
 \subsection{Primary Header}
+This example is the primary header of an image file for an ITL sensor, although the primary header is not sensor-specific.  It goes without saying that values of many of the keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the format.
+
+\red{
+Points for discussion:
+\begin{itemize}
+\item{LSST\_NUM, defined as the LSST-assigned serial number, is in LCA-10140 but not here}
+\item{MONOCH-SLIT\_C, AMP0-AZERO, and AMP2-ZERO\_CHECK keywords below are not in LCA-10140.}
+\item{Are the BINX and BINY keywords useful?}
+\item{LCA-10140 has DATE/MJD as the creation date of the file.  These is not in the example header below.}
+\item{MJD-OBS, the MJD date of the image acquisition, is not in LCA-10140}
+\item{What are the possible values of IMGTYPE?}
+\end{itemize}
+}
+
 
 \begin{alltt}
 \input{primary_header.txt}
 \end{alltt}
+
+\subsection{Image Extension Header (ITL)}
+This example is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~\ref{sec:coords_itl}.
+
+\begin{alltt}
+\input{image_header_seg10_ITL.txt}
+\end{alltt}
+
+\subsection{Image Extension Header (E2V)}
+
+This is an example of an image extension for an E2V sensor.  It is the first segment (Segment10) in the file.
+
+\begin{alltt}
+\input{image_header_seg10_E2V.txt}
+\end{alltt}
+
+\subsection{Test Conditions Header}
+
+\red{
+\begin{itemize}
+\item{What are the allowed values of the FILTER keyword?}
+\item{LCA-10140 has the MONOWL keyword (Monochromator wavelength setting), but it is not in the example header}
+\item{LCA-10140 has PD\_SER (Monitor Photodiode serial number), but this keyword is not in the example header.}
+\end{itemize}
+}
+
+\begin{alltt}
+\input{test_cond_header.txt}
+\end{alltt}
+
+\subsection{CCD Conditions Header}
+
+\red{
+\begin{itemize}
+\item{The CCD\_COND headers are just placeholders in recent single sensor image files.  Are they needed?  In LCA-10140 they contained keywords defining currents and voltages for the segments.  These probably were controller settings rather than read-out values.}
+\end{itemize}
+}
+
+\begin{alltt}
+\input{ccd_cond_header.txt}
+\end{alltt}
+
+\section{Pixel Coordinate Mapping}
+Describe the calculations for mapping segments to sensors, rafts, and the focal plane.  That is, describe how to derive the values for the MOSAIC and WCS keywords.
+
+\subsection{Coordinate Keyword Values (ITL)\label{sec:coords_itl}}
+This section defines the coordinate keywords for the headers of ITL image files.  The complete set depends on the sensor location in a raft and the raft location in the focal plane.
+
+Define the variables.
+
+The pixel coordinate system for the focal plane is approximate, of course, accounting for the nominal gaps between the sensors and rafts.  For simplicity, each raft is assigned to a fixed range of x and y pixel coordinates in the focal plane.  The differences in the pixel dimensions of E2V and ITL sensors are taken up by adjusting the gap between rafts by a small amount.  This scheme would also simplify handling a hybrid focal plane of E2V-only and ITL-only rafts.
+
+At the sensor level, the pixel coordinates start at (1,1).  The x-direction is the serial read-out direction, and the y-direction is the direction of parallel transfer.  
+
+The assembly of segments and sensors and rafts is defined in a `viewed from above' (or equivalently `viewed through L3') sense.  Overall the x pixel coordinates increase from right to left.
+
+
+\subsection{Coordinate Keyword Values (E2V)\label{sec:coords_e2v}}
+
 
 \end{document}
 

@@ -1,0 +1,27 @@
+XTENSION= 'BINTABLE'           / marks beginning of new HDU
+BITPIX  =                    8 / bits per data value
+NAXIS   =                    2 / number of axes
+NAXIS1  =                    0 / size of the n'th axis
+NAXIS2  =                    0 / size of the n'th axis
+PCOUNT  =                    0 / Required value
+GCOUNT  =                    1 / Required value
+TFIELDS =                    0 / Number of table fields
+CHECKSUM= '6kAe6hAb6hAb6hAb'   / checksum for the current HDU
+EXTNAME = 'TEST_COND'          / Name of the extension
+TEMP_SET=                -95.0 / Temperature set point
+CCDTEMP =            -95.00366 / Measured temperature
+ROOMTEMP=                72.68 / Room Temperature
+DWRTEMP =            -95.00366 / External Dewar Temperature
+DWRPRESS=              1.64E-6 / Dewar internal pressure level
+SRCTYPE = 'Newport-Xenon-Arc-Lamp' / Type of light source used
+SRCMODL = 'Newport-Xenon-Arc-Lamp' / Manufacturer?s Model number
+SRCPWR  =                251.0 / Light source power
+ND_FILT =                    0 / ND Filter after lamp (if any)
+FILTER  = 'green   '           / Optical Filter used
+MONOTYPE= 'Cornerstone260'
+MONOMODL= 'Cornerstone260'     / Monochromator model number
+MONOPOS =                    1 / Monochromator grating turret position
+MONOGRAT=                    1 / Monochromator grating in use
+PD_MODEL= 'KEITHLEY-INSTRUMENTS-INC.,MODEL-6487' / Monitor Photodiode model numb
+DATASUM = '0       '           / checksum of the data records
+END
