@@ -23,5 +23,8 @@ MONOMODL= 'Cornerstone260'     / Monochromator model number
 MONOPOS =                    1 / Monochromator grating turret position
 MONOGRAT=                    1 / Monochromator grating in use
 PD_MODEL= 'KEITHLEY-INSTRUMENTS-INC.,MODEL-6487' / Monitor Photodiode model numb
+HIERARCH MONOCH-SLIT_C=             0.0 / Width of the C slit in um
+HIERARCH AMP0-AZERO= 'F      '          / SYSTEM:AZERO value
+HIERARCH AMP2-ZERO_CHECK= 'off'         / Zero check on/off
 DATASUM = '0       '           / checksum of the data records
 END

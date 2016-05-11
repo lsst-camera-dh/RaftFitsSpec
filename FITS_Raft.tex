@@ -29,6 +29,7 @@
 
 \usepackage{listings}
 \usepackage{url}
+%\usepackage{longtabular}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -70,6 +71,8 @@ This document describes the naming, organization, and formats of the FITS files 
 
 \noindent{[2] LSST-1614 LSST Camera Coordinate and Numbering Systems}
 
+\noindent{[3] LSST-13381 LSST Camera Detector Plane Layout}
+
 \noindent{FITS standards, references, and resources are collected here:  \url{http://fits.gsfc.nasa.gov}.}
 
 \section{Introduction}
@@ -89,35 +92,51 @@ Considerations of human readability, data curation, and automated processing mot
 
 The directory structure for raft-level measurements is designed to extend from measurements with single rafts (in TS8) to entire focal planes (with the BOT).  The naming convention is:
 
-{\bf rafts/<institution>/<test type>/<job ID>/sraft\#\#}
+{\bf rafts/<institution>/sraft\#\#/<acquisition type>/<job ID>/<s\#\#>}
 
-with one or more subdirectory named for the rafts in the measurements.  
+\red{An example with the desired directory path:}
+
+\red{{\tt .../sraft22/dark\_acq/361/s12/E2V-CCD250-088\_dark\_dark\_3\_20160121191343.fits}}
+
+\red{N.B. This organization is not currently possible with the Job Harness system}
+
+%\red{TBD: expand <test type> to list the acquisition and analysis directories actually used?  Possibly limit to just the acquisition directories - this document is not defining specs for the analysis results directory/file naming or formats}
+%\red{Are there other acquisition types to be listed?  The directories with analysis results, and the results files themselves provisionally are not included in this specification.}
+
+%\red{Subdirectories for sensor names/raft locations}
 
 \begin{tabular}{| l | l |}
 \hline
+
 {\bf rafts} & A designator to distinguish from {\bf CCDs} for single-sensor data sets \\
 {\bf <institution>} & Either {\bf bnl} or {\bf slac} \\
-{\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
+{\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
+{\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, spot\_acq} \\
 {\bf <job ID>} & Job ID number assigned by the Job Harness \\
-{\bf sraft<\#\#>} & Designator of the science raft (\#\# = 01--22) \\
+{\bf <s\#\#>} & Location designator of the sensor in the raft (each \# = 0--2) \\
 \hline
 \end{tabular}
 
-{\bf Use the same designators for test type as in the EO test directories?}
+%{\bf Use the same designators for test type as in the EO test directories?}
 
-These directories may contain subdirectories, perhaps depending on the test type...
+%\red{These directories may contain subdirectories, perhaps depending on the test type...}
 
 
 \subsection{File Names}
 
-The file names for a given sensor, test type, and processing step shall be of the form%<sensor id>_<test type>_<image type>_<seq. info>_<time stamp>.fits
-<sensor id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits\begin{tabular}{| l | l |}
+The file names for a given sensor, test type, and processing step shall be of the form
+%<sensor id>_<test type>_<image type>_<seq. info>_<time stamp>.fits
+<sensor id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits
+
+\red{TBD:  Include metrology files}
+
+\begin{tabular}{| l | l |}
 \hline
 {\bf <sensor id>} & {\bf s{\tt \#\#}}, where {\tt \#\#} are the coordinates of the sensor in the raft, 0--2, as defined in [2] \\
 {\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
-{\bf <image type>} & One of dark, fe55, flat, lambda, spot, sflat\_nnn [where nnn is the wavelength in nm], or trap<image type> is one of bias, dark, or fe55 \\
-{\bf <seq. info>} & Normally a 3-digit sequence number such as 000, 001, 002.  Photon Transfer Curve data (pairs of flats) shall have exposure times and flat1/flat2 designators, e.g., 0010.0s\_flat1 \\
-{\bf <time stamp>} & A string of the form YYYYMMDDHHMMSS recording the year, month, day, hour, minute, and second (UTC) of the start of the data acquisition for the image. \\
+{\bf <image type>} & One of bias, dark, fe55, or flat \\
+{\bf <seq. info>} & Normally a 3-digit sequence number such as 000, 001, 002. \footnote{Photon Transfer Curve data (pairs of flats) shall have exposure times and flat1/flat2 designators, e.g., 0010.0s\_flat1} \\
+{\bf <time stamp>} & A string of the form YYYYMMDDHHMMSS recording UTC of the start of the image acquisition\\
 \hline
 \end{tabular}
 
@@ -136,17 +155,17 @@ The headers of the image extensions also define the pixel coordinate systems for
 \subsection{Primary Header}
 This example is the primary header of an image file for an ITL sensor, although the primary header is not sensor-specific.  It goes without saying that values of many of the keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the format.
 
-\red{
-Points for discussion:
-\begin{itemize}
-\item{LSST\_NUM, defined as the LSST-assigned serial number, is in LCA-10140 but not here}
-\item{MONOCH-SLIT\_C, AMP0-AZERO, and AMP2-ZERO\_CHECK keywords below are not in LCA-10140.}
-\item{Are the BINX and BINY keywords useful?}
-\item{LCA-10140 has DATE/MJD as the creation date of the file.  These is not in the example header below.}
-\item{MJD-OBS, the MJD date of the image acquisition, is not in LCA-10140}
-\item{What are the possible values of IMGTYPE?}
-\end{itemize}
-}
+%\red{
+%Points for discussion:
+%\begin{itemize}
+%\item{LSST\_NUM, defined as the LSST-assigned serial number, is in LCA-10140 but not here}
+%\item{MONOCH-SLIT\_C, AMP0-AZERO, and AMP2-ZERO\_CHECK keywords below are not in LCA-10140.}
+%\item{Are the BINX and BINY keywords useful?}
+%\item{LCA-10140 has DATE/MJD as the creation date of the file.  These is not in the example header below.}
+%\item{MJD-OBS, the MJD date of the image acquisition, is not in LCA-10140}
+%\item{What are the possible values of IMGTYPE?}
+%\end{itemize}
+%}
 
 
 \begin{alltt}
@@ -196,6 +215,8 @@ This is an example of an image extension for an E2V sensor.  It is the first seg
 
 \section{Pixel Coordinate Mapping}
 Describe the calculations for mapping segments to sensors, rafts, and the focal plane.  That is, describe how to derive the values for the MOSAIC and WCS keywords.
+
+The focal plane layout defined in [3] specifies the nominal locations of the rafts and the sensors within the rafts.
 
 \subsection{Coordinate Keyword Values (ITL)\label{sec:coords_itl}}
 This section defines the coordinate keywords for the headers of ITL image files.  The complete set depends on the sensor location in a raft and the raft location in the focal plane.
