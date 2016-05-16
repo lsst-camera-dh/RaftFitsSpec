@@ -98,7 +98,7 @@ The directory structure for raft-level measurements is designed to extend from m
 
 \red{{\tt .../sraft22/dark\_acq/361/s12/E2V-CCD250-088\_dark\_dark\_3\_20160121191343.fits}}
 
-\red{N.B. This organization is not currently possible with the Job Harness system}
+%\red{N.B. This organization is not currently possible with the Job Harness system}
 
 %\red{TBD: expand <test type> to list the acquisition and analysis directories actually used?  Possibly limit to just the acquisition directories - this document is not defining specs for the analysis results directory/file naming or formats}
 %\red{Are there other acquisition types to be listed?  The directories with analysis results, and the results files themselves provisionally are not included in this specification.}
@@ -107,11 +107,12 @@ The directory structure for raft-level measurements is designed to extend from m
 
 \begin{tabular}{| l | l |}
 \hline
-
-{\bf rafts} & A designator to distinguish from {\bf CCDs} for single-sensor data sets \\
+{\bf Quantity} & {\bf Description} \\
+\hline
+%{\bf rafts} & A designator to distinguish from {\bf CCDs} for single-sensor data sets \\
 {\bf <institution>} & Either {\bf bnl} or {\bf slac} \\
 {\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
-{\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, spot\_acq} \\
+{\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, ppump\_acq, qe\_acq, read\_noise, spot\_acq} \\
 {\bf <job ID>} & Job ID number assigned by the Job Harness \\
 {\bf <s\#\#>} & Location designator of the sensor in the raft (each \# = 0--2) \\
 \hline
@@ -131,6 +132,8 @@ The file names for a given sensor, test type, and processing step shall be of th
 \red{TBD:  Include metrology files}
 
 \begin{tabular}{| l | l |}
+\hline
+{\bf Quantity} & {\bf Description} \\
 \hline
 {\bf <sensor id>} & {\bf s{\tt \#\#}}, where {\tt \#\#} are the coordinates of the sensor in the raft, 0--2, as defined in [2] \\
 {\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
@@ -214,18 +217,114 @@ This is an example of an image extension for an E2V sensor.  It is the first seg
 \end{alltt}
 
 \section{Pixel Coordinate Mapping}
-Describe the calculations for mapping segments to sensors, rafts, and the focal plane.  That is, describe how to derive the values for the MOSAIC and WCS keywords.
+This section describes the calculations for mapping segments to sensors, rafts, and the focal plane, defining the shifts and rotations to make continuous pixel coordinate systems.  The pixel coordinate systems are based on the nominal layout of the rafts and focal plane as defined in [3], and are intended to be used primarily for visualization during I\&T of Science Rafts and of the Camera focal plane.
 
-The focal plane layout defined in [3] specifies the nominal locations of the rafts and the sensors within the rafts.
+The transformations are developed here in terms of the FITS World Coordinate System (WCS) keyword specifications for FITS image data [ref].  The next subsection describes the WCS FITS keywords used.
+
+%That is, describe how to derive the values for the MOSAIC and WCS keywords.
+
+%The focal plane layout defined in [3] specifies the nominal locations of the rafts and the sensors within the rafts.
+The complete set depends on the segment location in a CDD, the CCD location in a raft, and the raft location in the focal plane.  In [3] the locations of the segments, CCDs, and rafts are specified with two-digit identifiers corresponding to their x, y locations in the layout (see Figs. 1--3).  
+
+\subsection{Important Conventions}
+Note that the layout is represented in [3] as viewed through L3, i.e., looking down on the CCDs.  In this orientation, the x direction of the Camera Coordinate System is toward the $left$ and the y direction is $up$.  This convention is adopted here.  Note also that by this convention, the nominal x (serial) direction of a sensor is oriented along the y direction of the Camera Coordinate System.  
+
+By convention for FITS image data, the first pixel in an image has coordinates (1, 1).  This is adopted here for sensors and rafts.  In particular, the first pixel in an assembled raft image is assigned to the lower right pixel of Segment 00 in CCD 00, regardless of whether that CCD is actually present.  
+
+For focal plane-level images, the origin of the pixel coordinate system is defined here as the center of the focal plane, i.e., the center of CCD 11 in Raft 22.  This was adopted because the focal plane has no Raft 00.
+
+In the following $S$ is the segment location designator, $C$ is the CCD location designator in a raft, and $R$ is the raft location designator in the focal plane.  Where useful, these designators are decomposed into their x and y index values, e.g., $S = 10 \times S_x + S_y$.
+
+\begin{figure}
+\centering
+    \includegraphics[width=0.95\textwidth]{sensor_layout.pdf}
+    \caption{Dimensions and segment layouts for e2V {\it (left)} and ITL {\it (right)} CCDs.  Note that the camera coordinate system has the x axis oriented along what is the $-$y direction for single-sensor assembled images.  These images are from [3].}
+    \label{fig:sensor}
+\end{figure}
+
+\begin{figure}
+\centering
+    \includegraphics[width=0.95\textwidth]{raft_layout.pdf}
+    \caption{Dimensions and sensor layouts for e2V {\it (left)} and ITL {\it (right)} Science Rafts.  These images are from [3].}
+    \label{fig:raft}
+\end{figure}
+
+\begin{figure}
+\centering
+    \includegraphics[width=0.95\textwidth]{focal_plane_layout.pdf}
+    \caption{Dimensions and arrangements of the rafts in the focal plane, from [3].}
+    \label{fig:focalplane}
+\end{figure}
+
+\subsection{Dimensions and Pitch}
+The relevant quantities for defining the pixel coordinate systems are tabulated below.  All are extracted from the diagrams in [3].  The column {\bf Designator} lists the name of the corresponding variable in the algorithmic description of the coordinate calculation.  N.B. These variables are defined in terms of equivalent pixels, i.e., they are the physical dimensions divided by the pixel size (equivalent to multiplying the dimensions in mm by 100).
+
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+{\bf Quantity} & {\bf e2V CCD} & {\bf ITL CCD} & {\bf Designator} \\
+\hline
+Pixel size & 10~$\mu$m $\times$ 10~$\mu$m & 10~$\mu$m $\times$ 10~$\mu$m & -- \\
+Segment pixels & $2002 \times 512$ (vertical $\times$ horizontal) & $2000 \times 509$ & dimv $\times$ dimh \\
+Active area  (x $\times$ y) \footnote{Note that the dimensions are specified here in terms of the orientation of the CCDs in the raft.} & 40.04 mm $\times$ 40.96 mm & 40.00 mm $\times$ 40.72 mm  & cay $\times$ cay \\
+Physical size & 41.97 mm $\times$ 42.00 mm & 41.98 mm $\times$ 41.98 mm & cpx $\times $ cpy \\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+{\bf Quantity} & {\bf e2V Raft} & {\bf ITL Raft} & {\bf Designator} \\
+\hline
+Pitch of CCDs & 42.25 mm $\times$ 42.25 mm & 42.25 mm $\times$ 42.25 mm & -- \\
+Inter-CCD gaps & 0.28 mm $\times$ 0.25 mm & 0.27 mm $\times$ 0.27 mm & gap\_inx $\times$ gap\_iny \\
+Pitch of rafts & 127.00 mm & 127.00 mm & --\\
+Gap at edges of rafts & 0.27 mm $\times$ 0.25 mm & 0.26 mm $\times$ 0.26 mm & gap\_outx $\times$ gap\_outy \\
+\hline
+\end{tabular}
+
+Let $(x_s, y_s)$ denote pixel coordinates in a given segment $S$, as read out, so that $x_s$ is in the serial direction and $y_s$ is in the parallel direction, and consider them to be in as-read-out order, without transpositions to account for the locations of the output nodes.  Then if $S$ is in CCD $C$ and the CCD is in raft $R$, then the pixel coordinates in each system can be defined as follows.
+
+Keeping in mind that the CCD is oriented as in Fig. 1 (i.e., rotated so the parallel direction is vertical), then the corresponding pixel coordinates in the CCD system are 
+
+$x_c = y_s (1 - S_x) + (2 {\rm dimv} + 1 - y_s)  S_x $
+
+and (for e2V CCDs)
+
+$y_c = (x_s + S_y \times {\rm dimh})  (1 - S_x) + (1 - x_s + (S_y + 1) \times {\rm dimh}) S_x$
+
+or (for ITL CCDs)
+
+$y_c = (1 - x_s + (S_y  + 1) \times {\rm dimh} )  (1 - S_x) + (1 - x_s + (S_y + 1) \times {\rm dimh}) S_x$
+  
+The corresponding pixel coordinates in the raft are:
+
+$x_r = x_c + {\rm gap\_outx} + (1/2)({\rm cpx} - {\rm cax}) + C_x ( 2 \times {\rm dimv} + {\rm gap\_inx} + {\rm cpx} - {\rm cax})$
+
+and
+
+$y_r = y_c + {\rm gap\_outy} + (1/2)({\rm cpy} - {\rm cay}) + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm cpy} - {\rm cay})$
+
+And the corresponding coordinates in the focal plane (recalling that these are measured with respect to the center of the focal plane) are:
+
+$x_f = x_r + (R_x - 2) \times 12700$
+
+$y_f = y_r + (R_y - 2) \times 12700$
+
+%N.B. The actual separation between the edges of adjacent rafts is twice the gap sizes listed in the last entry of the table above.
+
+%The dimensions in the table above can be converted to equivalent numbers of pixels by dividing by 10 $\mu$m, i.e., multiplying the dimensions in mm by 100.
 
 \subsection{Coordinate Keyword Values (ITL)\label{sec:coords_itl}}
-This section defines the coordinate keywords for the headers of ITL image files.  The complete set depends on the sensor location in a raft and the raft location in the focal plane.
+This section defines the coordinate keywords for the headers of ITL image files.   
+
+
 
 Define the variables.
 
 The pixel coordinate system for the focal plane is approximate, of course, accounting for the nominal gaps between the sensors and rafts.  For simplicity, each raft is assigned to a fixed range of x and y pixel coordinates in the focal plane.  The differences in the pixel dimensions of E2V and ITL sensors are taken up by adjusting the gap between rafts by a small amount.  This scheme would also simplify handling a hybrid focal plane of E2V-only and ITL-only rafts.
 
-At the sensor level, the pixel coordinates start at (1,1).  The x-direction is the serial read-out direction, and the y-direction is the direction of parallel transfer.  
+At the sensor level, the pixel coordinates start at (1, 1).  The x-direction is the serial read-out direction, and the y-direction is the direction of parallel transfer.  
 
 The assembly of segments and sensors and rafts is defined in a `viewed from above' (or equivalently `viewed through L3') sense.  Overall the x pixel coordinates increase from right to left.
 
