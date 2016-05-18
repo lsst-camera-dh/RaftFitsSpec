@@ -55,6 +55,8 @@
 
 \maketitle
 \tableofcontents
+\newpage
+\listoftables
 
 \section{Change History}
 Initial draft in progress.  \red{Issues for discussion are highlighted in red.}
@@ -201,9 +203,9 @@ This example is the first image extension of an image file for an ITL sensor.  T
 \caption{Example header of an image extension for an ITL sensor. \label{tab:image_ITL}}
 \end{table}
 
-\subsection{Image Extension Header (E2V)}
+\subsection{Image Extension Header (e2V)}
 
-This is an example of an image extension for an E2V sensor.  It is the first segment (Segment10) in the file.
+This is an example of an image extension for an e2V sensor.  It is the first segment (Segment10) in the file.
 
 \begin{table}
 \begin{alltt}
@@ -324,9 +326,11 @@ Gaps at edges of rafts & 26.5 $\times$ 25 & 26 $\times$ 26 & gap\_outx $\times$ 
 %\caption{Science Raft-related dimensional quantities for the pixel coordinate systems.  The physical dimensions have been converted to pixels for the nominal 10~$\mu$m $\times$ 10~$\mu$m pixel size.\label{tab:raft}}
 %\end{table}
 
+\red{CCS does not do any transposing or inverting of the individual segments, right?}
+
 Let $(x_s, y_s)$ denote pixel coordinates in a given segment $S$, as read out, so that $x_s$ is in the serial direction and $y_s$ is in the parallel direction, and consider them to be in as-read-out order, without transpositions to account for the locations of the output nodes.  Then if $S$ is in CCD $C$ and the CCD is in raft $R$, then the pixel coordinates in each system can be defined as follows.
 
-Keeping in mind that the CCD is oriented as in Figure 1 (i.e., rotated so the parallel direction is vertical), then the corresponding pixel coordinates in the CCD system are 
+Keeping in mind that the CCD is oriented as in Figure 1 (i.e., rotated so the parallel direction is horizontal), then the corresponding pixel coordinates in the CCD system are 
 \begin{equation}
 x_c = y_s (1 - S_x) + (2 \times {\rm dimv} + 1 - y_s)  S_x
 \end{equation}
@@ -371,7 +375,7 @@ y_f = y_r + R_y \times {\rm rafty}
 %The dimensions in the table above can be converted to equivalent numbers of pixels by dividing by 10 $\mu$m, i.e., multiplying the dimensions in mm by 100.
 
 
-%The pixel coordinate system for the focal plane is approximate, of course, accounting for the nominal gaps between the sensors and rafts.  For simplicity, each raft is assigned to a fixed range of x and y pixel coordinates in the focal plane.  The differences in the pixel dimensions of E2V and ITL sensors are taken up by adjusting the gap between rafts by a small amount.  This scheme would also simplify handling a hybrid focal plane of E2V-only and ITL-only rafts.
+%The pixel coordinate system for the focal plane is approximate, of course, accounting for the nominal gaps between the sensors and rafts.  For simplicity, each raft is assigned to a fixed range of x and y pixel coordinates in the focal plane.  The differences in the pixel dimensions of E2V and ITL sensors are taken up by adjusting the gap between rafts by a small amount.  This scheme would also simplify handling a hybrid focal plane of e2V-only and ITL-only rafts.
 
 \subsection{World Coordinate System FITS Keywords}
 The FITS World Coordinate System (WCS; see Sec. 8 of [4]) keyword specification allows multiple coordinate systems to be defined for the same image.  Each coordinate system is designated by a single letter; the letter is appended to the corresponding header keywords that define the transformation.  We take advantage of that multiple coordinate system here to define coordinate systems for individual segments ({\tt A} for Amplifier\footnote{The NOAO MOSAIC header keyword convention, which is an earlier approach to defining keywords for mapping multi-sensor images together, used the term Amplifier to refer to individual image segments, i.e., portions read out through one amplifier node.  This is the motivation for adopting {\tt A} here.}), CCDs ({\tt C}), Rafts ({\tt R}), and the entire focal plane ({\tt F}). 
@@ -400,13 +404,14 @@ Table~\ref{tab:coords} summarizes the coordinate systems and ranges presented he
 
 \begin{table}
 \begin{centering}
-\begin{tabular}{| l | c | c | }
+\begin{tabular}{| c | c | c | }
 \hline
 {\bf Coordinates} & {\bf Description} & {\bf Range}  \\
 \hline
 $x_s, y_s$ & Segment, in as-read-out order & [1--512], [1--2002] (e2V) and [1--509], [1--2000] (ITL) \\
+$x_A, y_A$ & Amplifier, in as-seen-from-L3 order & [1--2002, 1--512]  (e2V) and [1--2000], [1--509] (ITL) \\
 $x_c, y_c$ & CCD & [1--4004], [1--4096] (e2V) and [1--4000], [1--4072] (ITL) \\
-$x_r, y_r$ & Raft & [124, 12577], [78--12623] (e2V) and [ ], [ ] (ITL) \\
+$x_r, y_r$ & Raft & [124, 12577], [78--12623] (e2V) and [126--12575], [90--12611] (ITL) \\
 $x_f, y_f$ & Focal Plane & [ ], [ ] (e2V) and [ ], [ ] (ITL) \\
 \hline
 \end{tabular}
@@ -449,7 +454,7 @@ $x_f, y_f$ & Focal Plane & [ ], [ ] (e2V) and [ ], [ ] (ITL) \\
 & {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + 0.5({\rm ccdpx} - {\rm ccdax}) +  C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax} +R_x \times {\rm raftx} \\
 & {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + 0.5({\rm ccdpy} -  {\rm ccday}) + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty}  \\
 \end{align*}
-\caption{Definitions of WCS coordinate transformation keywords for e2V sensors\label{tab:e2Vwcs}}
+\caption{Definitions of WCS coordinate transformation keywords for e2V sensors\label{tab:e2vwcs}}
 \end{table}
 
 \begin{table}
@@ -494,49 +499,49 @@ $x_f, y_f$ & Focal Plane & [ ], [ ] (e2V) and [ ], [ ] (ITL) \\
 
 \subsection{Coordinate Keyword Values (e2V)\label{sec:coords_ifl}}
 
-Here is an example image header for a segment of an e2V sensor, {\bf segment TBD, and keyword values to be checked}.  
+Here is an example image header for a segment of an e2V sensor, {\bf segment TBD, and keyword values to be updated}.  
 
 \begin{alltt}
 WCSNAMEA= 'AMPLIFIER'          / Name of coordinate system
 CTYPE1A = 'Seg_X   '           / In the camera coordinate system
 CTYPE2A = 'Seg_Y   '           / In the camera coordinate system
-CRVAL1A =                  1.0
-CD1_1A  =                 -1.0
-CD1_2A  =                  0.0
-CD2_1A  =                  0.0
-CD2_2A  =                 -1.0
-CRPIX1A =                545.0
-CRPIX2A =               4097.0
+CRVAL1A =                  ##
+CD1_1A  =                    0
+CD1_2A  =                   ##
+CD2_1A  =                   ##
+CD2_2A  =                    0
+CRPIX1A =                  0.0
+CRPIX2A =                  0.0
 WCSNAMEC= 'CCD'                / Name of coordinate system
 CTYPE1C = 'CCD_X   '           / In the camera coordinate system
 CTYPE2C = 'CCD_Y   '           / In the camera coordinate system
-CRVAL1C =                  1.0
-CD1_1AC =                 -1.0
-CD1_2AC =                  0.0
-CD2_1AC =                  0.0
-CD2_2AC =                 -1.0
-CRPIX1C =                545.0
-CRPIX2C =               4097.0
+CRVAL1C =                  ##
+CD1_1AC =                   0
+CD1_2AC =                  ##
+CD2_1AC =                  ##
+CD2_2AC =                   0
+CRPIX1C =                 0.0
+CRPIX2C =                 0.0
 WCSNAMER= 'RAFT'               / Name of coordinate system
 CTYPE1R = 'RAFT_X'             / In the camera coordinate system
 CTYPE2R = 'RAFT_Y'             / In the camera coordinate system
-CRVAL1R =                  1.0
-CD1_1AR =                 -1.0
-CD1_2AR =                  0.0
-CD2_1AR =                  0.0
-CD2_2AR =                 -1.0
-CRPIX1R =                545.0
-CRPIX2R =               4097.0
+CRVAL1R =                  ##
+CD1_1AR =                   0
+CD1_2AR =                  ##
+CD2_1AR =                  ##
+CD2_2AR =                   0
+CRPIX1R =                  0.0
+CRPIX2R =                  0.0
 WCSNAMEF= 'FOCAL_PLANE'        / Name of coordinate system
 CTYPE1F = 'FP_X'               / In the camera coordinate system
 CTYPE2F = 'FP_Y'               / In the camera coordinate system
-CRVAL1F =                  1.0
-CD1_1AF =                 -1.0
-CD1_2AF =                  0.0
-CD2_1AF =                  0.0
-CD2_2AF =                 -1.0
-CRPIX1F =                545.0
-CRPIX2F =               4097.0
+CRVAL1F =                  ##
+CD1_1AF =                  0
+CD1_2AF =                  ##
+CD2_1AF =                  ##
+CD2_2AF =                  0
+CRPIX1F =                  0.0
+CRPIX2F =                  0.0
 \end{alltt}
 
 
