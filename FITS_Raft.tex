@@ -61,6 +61,8 @@
 \section{Change History}
 Initial draft in progress.  \red{Issues for discussion are highlighted in red.}
 
+\red{19 May:  Added Mosaic DETSIZE, DATASEC, and DETSEC specifications for single-sensor image assembly with trimming.  The WCS CD keywords may change to PC/CDELT; this would be a minor change not affecting any of the calculations.}
+
 The source for this draft, including ASCII versions of the example headers, is maintained at \url{https://github.com/lsst-camera-dh/RaftFitsSpec}.
 
 \section{Scope}
@@ -194,7 +196,8 @@ This example is the primary header of an image file for an ITL sensor, although 
 \end{table}
 
 \subsection{Image Extension Header (ITL)}
-This example is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~\ref{sec:coords_itl}.
+This example is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~TBD.
+%\ref{sec:coords_itl}.
 
 \begin{table}
 \begin{alltt}
@@ -283,7 +286,7 @@ In the following $S$ is the segment location designator, $C$ is the CCD location
 
 \begin{figure}
 \centering
-    \includegraphics[width=0.95\textwidth]{focal_plane_layout.pdf}
+    \includegraphics[width=0.75\textwidth]{focal_plane_layout.pdf}
     \caption{Dimensions and arrangements of the rafts in the focal plane, from [3].}
     \label{fig:focalplane}
 \end{figure}
@@ -349,13 +352,13 @@ y_c = (1 - x_s + (S_y  + 1) \times {\rm dimh} )  (1 - S_x) + [1 - x_s + (S_y + 1
 The corresponding pixel coordinates in the raft are:
 
 \begin{equation}
-x_r = x_c + {\rm gap\_outx} + 0.5({\rm ccdpx} - {\rm ccdax}) + C_x ( 2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax})
+x_r = x_c + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x ( 2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax})
 \end{equation}
 
 and
 
 \begin{equation}
-y_r = y_c + {\rm gap\_outy} + 0.5({\rm ccdpy} - {\rm ccday}) + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday})
+y_r = y_c + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday})
 \end{equation}
 
 And the corresponding coordinates in the focal plane are:
@@ -393,26 +396,29 @@ and
 y_A = {\tt CD2\_1A} \times (x_s - {\tt CRPIX1A}) + {\tt CD2\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL2A}
 \end{equation}
 
-For reference, $x_s$ is in the range [1, dimh] and $y_s$ is in the range [1, dimv].  That is, they are in the range of the first and second dimensions of the images of the individual segments.  The transformation equations defining ($x_C, y_C$), ($x_R, y_R$), and ($x_F, y_F$) are the same as above, with the {\tt A} keywords replaced by their {\tt C}, {\tt R}, and {\tt F} versions, respectively.
+%For reference, $x_s$ is in the range [1, dimh] and $y_s$ is in the range [1, dimv].  That is, they are in the range of the first and second dimensions of the images of the individual segments.  
+The transformation equations defining ($x_c, y_c$), ($x_r, y_r$), and ($x_f, y_f$) are the same as above, with the {\tt A} keywords replaced by their {\tt C}, {\tt R}, and {\tt F} versions, respectively.
 
 Because the transformation matrix does not change the pixel scale, the {\tt CD} values are always $\pm1$ or 0.  Similarly, for these transformations the offsets are always in units of pixels.  For convenience all {\tt CRPIX} values will be defined as 0.  The offsets are then determined only by the {\tt CRVAL} keyword values.
 
 Tables \ref{tab:e2vwcs} and \ref{tab:itlwcs} present the WCS keyword values in terms of $S$, $C$, $R$ and the dimensional quantities of Table~\ref{tab:dims}, for e2V and ITL sensors, respectively.  
 
+{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer either needs to be aware of (and apply) the trimming first\footnote{For example, currently {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present; see Section~\ref{sec:mosaic}.}.
+
 \subsection{Summary of Coordinate Systems}
-Table~\ref{tab:coords} summarizes the coordinate systems and ranges presented here.
+Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  The focal plane coordinate ranges are listed separately for the x and y directions; not all combinations of x and y values in those ranges lie within a raft.
 
 \begin{table}
 \begin{centering}
-\begin{tabular}{| c | c | c | }
+\begin{tabular}{| c | c | c | c |}
 \hline
-{\bf Coordinates} & {\bf Description} & {\bf Range}  \\
+{\bf Coordinates} & {\bf Description} & {\bf Range (e2V)} & {\bf Range (ITL)}  \\
 \hline
-$x_s, y_s$ & Segment, in as-read-out order & [1--512], [1--2002] (e2V) and [1--509], [1--2000] (ITL) \\
-$x_A, y_A$ & Amplifier, in as-seen-from-L3 order & [1--2002, 1--512]  (e2V) and [1--2000], [1--509] (ITL) \\
-$x_c, y_c$ & CCD & [1--4004], [1--4096] (e2V) and [1--4000], [1--4072] (ITL) \\
-$x_r, y_r$ & Raft & [124, 12577], [78--12623] (e2V) and [126--12575], [90--12611] (ITL) \\
-$x_f, y_f$ & Focal Plane & [ ], [ ] (e2V) and [ ], [ ] (ITL) \\
+$x_s, y_s$ & Segment, in as-read-out order & 1--512, 1--2002 & 1--509, 1--2000  \\
+$x_A, y_A$ & Amplifier, in as-seen-from-L3 order & 1--2002, 1--512  & 1--2000, 1--509 \\
+$x_c, y_c$ & CCD & 1--4004, 1--4096 & 1--4000, 1--4072  \\
+$x_r, y_r$ & Raft & 124--12577, 78--12623  & 126--12575, 90--12611 \\
+$x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126, 63375, 90--63411 \\
 \hline
 \end{tabular}
 \caption{Pixel coordinate systems and their ranges \label{tab:coords}}
@@ -443,16 +449,16 @@ $x_f, y_f$ & Focal Plane & [ ], [ ] (e2V) and [ ], [ ] (ITL) \\
 & {\tt CD2\_2R} = 0 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
-& {\tt CRVAL1R} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + 0.5({\rm ccdpx} - {\rm ccdax}) + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax} \\
-& {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + 0.5({\rm ccdpy} - {\rm ccday}) + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
+& {\tt CRVAL1R} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
+& {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
 & {\tt CD1\_1F} = 0  \\
 & {\tt CD1\_2F} = 1 - 2 \times S_x \\
 & {\tt CD2\_1F} = 1 - 2 \times S_x \\
 & {\tt CD2\_2F} = 0 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
-& {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + 0.5({\rm ccdpx} - {\rm ccdax}) +  C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax} +R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + 0.5({\rm ccdpy} -  {\rm ccday}) + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty}  \\
+& {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 +  C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) +R_x \times {\rm raftx} \\
+& {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} -  {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty}  \\
 \end{align*}
 \caption{Definitions of WCS coordinate transformation keywords for e2V sensors\label{tab:e2vwcs}}
 \end{table}
@@ -481,69 +487,109 @@ $x_f, y_f$ & Focal Plane & [ ], [ ] (e2V) and [ ], [ ] (ITL) \\
 & {\tt CD2\_2R} = 0 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
-& {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + 0.5({\rm ccdpx} - {\rm ccdax}) + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax} \\
-& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + 0.5({\rm ccdpy} - {\rm ccday}) + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
+& {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
+& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
 & {\tt CD1\_1F} = 0 \\
 & {\tt CD1\_2F} = 1 - 2 \times S_x \\
 & {\tt CD2\_1F} = -1 \\
 & {\tt CD2\_2F} = 0 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
-& {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + 0.5({\rm ccdpx} - {\rm ccdax}) + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax} + R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + 0.5({\rm ccdpy} - {\rm ccday}) +  C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty} \\
+& {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) + R_x \times {\rm raftx} \\
+& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 +  C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty} \\
 \end{align*}
 \caption{Definitions of WCS coordinate transformation keywords for ITL sensors\label{tab:itlwcs}}
 \end{table}
 
 
 
-\subsection{Coordinate Keyword Values (e2V)\label{sec:coords_ifl}}
+\subsection{Other WCS Header Keywords \label{sec:coords_ifl}}
 
-Here is an example image header for a segment of an e2V sensor, {\bf segment TBD, and keyword values to be updated}.  
+The WCS FITS specification includes required keywords to name the coordinate systems and the axes.  These are the same in every image extension of every file, and are listed in Table~\ref{tab:otherwcs}.  The names are potentially useful for labels.
 
+\begin{table}
 \begin{alltt}
 WCSNAMEA= 'AMPLIFIER'          / Name of coordinate system
 CTYPE1A = 'Seg_X   '           / In the camera coordinate system
 CTYPE2A = 'Seg_Y   '           / In the camera coordinate system
-CRVAL1A =                  ##
-CD1_1A  =                    0
-CD1_2A  =                   ##
-CD2_1A  =                   ##
-CD2_2A  =                    0
-CRPIX1A =                  0.0
-CRPIX2A =                  0.0
-WCSNAMEC= 'CCD'                / Name of coordinate system
+WCSNAMEC= 'CCD     '           / Name of coordinate system
 CTYPE1C = 'CCD_X   '           / In the camera coordinate system
 CTYPE2C = 'CCD_Y   '           / In the camera coordinate system
-CRVAL1C =                  ##
-CD1_1AC =                   0
-CD1_2AC =                  ##
-CD2_1AC =                  ##
-CD2_2AC =                   0
-CRPIX1C =                 0.0
-CRPIX2C =                 0.0
-WCSNAMER= 'RAFT'               / Name of coordinate system
-CTYPE1R = 'RAFT_X'             / In the camera coordinate system
-CTYPE2R = 'RAFT_Y'             / In the camera coordinate system
-CRVAL1R =                  ##
-CD1_1AR =                   0
-CD1_2AR =                  ##
-CD2_1AR =                  ##
-CD2_2AR =                   0
-CRPIX1R =                  0.0
-CRPIX2R =                  0.0
+WCSNAMER= 'RAFT    '           / Name of coordinate system
+CTYPE1R = 'RAFT_X  '           / In the camera coordinate system
+CTYPE2R = 'RAFT_Y  '           / In the camera coordinate system
 WCSNAMEF= 'FOCAL_PLANE'        / Name of coordinate system
-CTYPE1F = 'FP_X'               / In the camera coordinate system
-CTYPE2F = 'FP_Y'               / In the camera coordinate system
-CRVAL1F =                  ##
-CD1_1AF =                  0
-CD1_2AF =                  ##
-CD2_1AF =                  ##
-CD2_2AF =                  0
-CRPIX1F =                  0.0
-CRPIX2F =                  0.0
+CTYPE1F = 'FP_X    '           / In the camera coordinate system
+CTYPE2F = 'FP_Y    '           / In the camera coordinate system
 \end{alltt}
+\caption{WCS header keywords to define the names of the coordinate systems and their axes.\label{tab:otherwcs}}
+\end{table}
 
+\subsection{NOAO Mosaic FITS Keywords for Single-Sensor Images\label{sec:mosaic}}
 
+The NOAO Mosaic keywords\footnote{\url{http://iraf.noao.edu/projects/ccdmosaic/imagedef/imagedef.html}} are not part of the FITS standard but by virtue of having been the first defined for assembling images from multi-CCD cameras, are at least widely used.  Unlike, WCS, which defines a mapping for every pixel in the image array, the Mosaic keywords include a specification of the pre-scan and over-scan regions of the images.  These can be used for bias corrections, of course, and Mosaic-aware FITS image viewers can trim away these regions as part of assembling a multi-segment image.
+
+This section develops the values of Mosaic keywords so that {\it ds9} can assemble a trimmed version of an image from a single CCD {\it only}, oriented so that the parallel transfer directions are vertical and the serial (readout) directions are horizontal.  This is the conventional way that single-CCD images are examined in, e.g., sensor acceptance testing.  The viewing direction is still `as-seen-through-L3' but the sensor is effectively 90$^\circ$ counter-clockwise from the Camera coordinate system orientation shown in Figure 1.  In this rotated system, the x coordinate still increases toward the {\it left}.
+
+The pixel dimensional parameters needed to define the Mosaic keywords are provided in Table~\ref{tab:mosaic}.  Some of them (image segment sizes) are the same as for the WCS keyword specification (Table~\ref{tab:dims}) but are duplicated here for convenience.
+
+\begin{table}
+\begin{centering}
+\begin{tabular}{| l | c | c | c |}
+\hline
+{\bf Quantity} & {\bf e2V CCD} & {\bf ITL CCD} & {\bf Designator} \\
+\hline
+Segment pixels & 2002 $\times$ 512 (vertical $\times$ horizontal) & $2000 \times 509$ & dimv $\times$ dimh \\
+Pre-scan pixels & 10 & 3 & preh \\
+Over-scan pixels & 22 & 32 & overh \\
+Vertical over-scan pixels & 46 & 48 & overv \\
+\hline
+\end{tabular}
+\caption{CCD-related parameters for defining NOAO Mosaic keywords for assembling single-CCD images\label{tab:mosaic}}
+\end{centering}
+\end{table}
+
+\begin{table}
+\begin{align*}
+& {\tt DETSIZE} =~'[1: \{8 \times {\rm dimh}\}, 1: \{2 \times {\rm dimv}\}]' \\
+& {\tt DATASEC} =~'[ \{{\rm preh} + 1\} : \{{\rm preh} + {\rm dimh}\}, 1 :  \{{\rm dimv}\}]' \\
+& {\tt DETSEC} =~'[ \{dsx_1\} : \{dsx_2\}, \{dsy_1\}: \{dsy_2\}]' \\
+\end{align*}
+\caption{Definitions of Mosaic keywords\label{tab:detsize}}
+\end{table}
+
+Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASEC} keywords, which depend on the sizes of the CCD segments, but not on the locations of the readout notes.  For the specifications for the {\tt DETSEC} keyword, which do depend on the location of the readout node see Tables~\ref{tab:detsece2v} and \ref{tab:detsecitl} for e2V and ITL CCDs, respectively.  In each of these tables, the quantities in \{ \} are understood to be replaced by the corresponding numerical values in the FITS headers.  The other formatting, with single quote marks, square brackets, colons, and commas, is understood to be part of the header keyword specifications.
+
+\begin{table}
+\begin{align*}
+& dsx_1 = (S_y \times {\rm dimh} + 1)(1 - S_x) + (S_y + 1) \times {\rm dimh} \times S_x  \\
+& dsx_2 = (S_y +1)  \times {\rm dimh} \times (1 - S_x) + (S_y \times {\rm dimh} + 1) S_x \\
+& dsy_1 = 2 \times {\rm dimv} \times (1 - S_x) +  S_x \\
+& dsy_2 = ({\rm dimv} + 1)(1 - S_x) + {\rm dimv}  \times S_x \\ 
+\end{align*}
+\caption{Definitions of Mosaic {\tt DETSEC} keyword elements for e2V CCDs\label{tab:detsece2v}}
+\end{table}
+
+\begin{table}
+\begin{align*}
+& dsx_1 = (S_y +1) \times {\rm dimh} \times (1 - S_x) + (S_y + 1) \times {\rm dimh} \times S_x  \\
+& dsx_2 = (S_y  \times {\rm dimh} + 1) \times (1 - S_x) + (S_y \times {\rm dimh} + 1) S_x \\
+& dsy_1 = 2 \times {\rm dimv} \times (1 - S_x) +  S_x \\
+& dsy_2 = ({\rm dimv} + 1)(1 - S_x) + {\rm dimv}  \times S_x \\ 
+\end{align*}
+\caption{Definitions of Mosaic {\tt DETSEC} keyword elements for ITL CCDs\label{tab:detsecitl}}
+\end{table}
+
+%if (S_x == 0) then
+%    {\tt DETSEC} = '[S_y \times {\rm dimh} + 1: (S_y +1) \times {\rm dimh}, 2 \times {\rm dimv} : {\rm dimv} + 1]'
+%else
+%    {\tt DETSEC} = '[(S_y + 1) \times dimh : S_y \times {\rm dimh} + 1, 1: {\rm dimv}]'
+%    
+%or (for ITL sensors)
+%if (S_x == 0) then
+%    DETSEC = '[(Sy + 1)*dimh:Sy*dimh + 1, 2*dimv:dimv + 1]'
+%else
+%    DETSEC = '[(Sy + 1)*dimh : Sy*dimh +1, 1: dimv]'
+    
 \end{document}
 
