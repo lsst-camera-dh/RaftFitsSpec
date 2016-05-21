@@ -61,6 +61,8 @@
 \section{Change History}
 Initial draft in progress.  \red{Issues for discussion are highlighted in red.}
 
+\red{20 May:  Added DTM/DTV keyword specifications to define the pixel coordinates for an assembled single-CCD image}
+
 \red{19 May:  Added Mosaic DETSIZE, DATASEC, and DETSEC specifications for single-sensor image assembly with trimming.  The WCS CD keywords may change to PC/CDELT; this would be a minor change not affecting any of the calculations.}
 
 The source for this draft, including ASCII versions of the example headers, is maintained at \url{https://github.com/lsst-camera-dh/RaftFitsSpec}.
@@ -408,6 +410,8 @@ Tables \ref{tab:e2vwcs} and \ref{tab:itlwcs} present the WCS keyword values in t
 \subsection{Summary of Coordinate Systems}
 Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  The focal plane coordinate ranges are listed separately for the x and y directions; not all combinations of x and y values in those ranges lie within a raft.
 
+
+
 \begin{table}
 \begin{centering}
 \begin{tabular}{| c | c | c | c |}
@@ -501,11 +505,9 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126, 63375, 90--63411 \\
 \caption{Definitions of WCS coordinate transformation keywords for ITL sensors\label{tab:itlwcs}}
 \end{table}
 
-
-
 \subsection{Other WCS Header Keywords \label{sec:coords_ifl}}
 
-The WCS FITS specification includes required keywords to name the coordinate systems and the axes.  These are the same in every image extension of every file, and are listed in Table~\ref{tab:otherwcs}.  The names are potentially useful for labels.
+The WCS FITS specification includes required keywords to name the coordinate systems and the axes.  These are the same in every image extension of every file, and are listed in Table~\ref{tab:otherwcs}.  The names are potentially useful for labels.  There is no particular naming convention for pixel coordinates; what is adopted in the table is just naming the coordinate axes according to the coordinate system and the dimension (x or y).
 
 \begin{table}
 \begin{alltt}
@@ -529,7 +531,7 @@ CTYPE2F = 'FP_Y    '           / In the camera coordinate system
 
 The NOAO Mosaic keywords\footnote{\url{http://iraf.noao.edu/projects/ccdmosaic/imagedef/imagedef.html}} are not part of the FITS standard but by virtue of having been the first defined for assembling images from multi-CCD cameras, are at least widely used.  Unlike, WCS, which defines a mapping for every pixel in the image array, the Mosaic keywords include a specification of the pre-scan and over-scan regions of the images.  These can be used for bias corrections, of course, and Mosaic-aware FITS image viewers can trim away these regions as part of assembling a multi-segment image.
 
-This section develops the values of Mosaic keywords so that {\it ds9} can assemble a trimmed version of an image from a single CCD {\it only}, oriented so that the parallel transfer directions are vertical and the serial (readout) directions are horizontal.  This is the conventional way that single-CCD images are examined in, e.g., sensor acceptance testing.  The viewing direction is still `as-seen-through-L3' but the sensor is effectively 90$^\circ$ counter-clockwise from the Camera coordinate system orientation shown in Figure 1.  In this rotated system, the x coordinate still increases toward the {\it left}.
+This section develops the values of Mosaic keywords so that {\it ds9} can assemble a trimmed version of an image from a single CCD {\it only}, oriented so that the parallel transfer directions are vertical and the serial (readout) directions are horizontal.  This is the conventional way that single-CCD images are examined in, e.g., sensor acceptance testing.  The viewing direction is still `as-seen-through-L3' but the sensor is effectively 90$^\circ$ counter-clockwise from the Camera coordinate system orientation shown in Figure 1.  In this rotated system, the x coordinate still increases toward the {\it left} and the origin is at the lower right.
 
 The pixel dimensional parameters needed to define the Mosaic keywords are provided in Table~\ref{tab:mosaic}.  Some of them (image segment sizes) are the same as for the WCS keyword specification (Table~\ref{tab:dims}) but are duplicated here for convenience.
 
@@ -548,6 +550,38 @@ Vertical over-scan pixels & 46 & 48 & overv \\
 \caption{CCD-related parameters for defining NOAO Mosaic keywords for assembling single-CCD images\label{tab:mosaic}}
 \end{centering}
 \end{table}
+
+The basic Mosaic keywords in each image extension are {\tt DETSIZE}, a string defining the pixel coordinate range of the CCD (after trimming the pre/over-scan regions), {\tt DATASEC}, a string defining the pixel ranges of the part of the image segment that are not pre/over-scan regions, and {\tt DETSEC}, a string defining how that trimmed image segment maps into the overall CCD coordinate system.  For the latter, inversions in the x or y direction are indicated by reversing the pixel coordinate ranges.  These keywords are the {\bf only} header keywords that {\it ds9} uses to assemble `Mosaic' images.  Their definitions in terms of the CCD pixel parameters are presented in Table~\ref{tab:detsize}.  The specific pixel coordinate ranges for {\tt DETSEC} are defined in Table~\ref{tab:detsece2v} for e2V CCDs and Table~\ref{tab:detsecitl} for ITL CCDs.
+
+The coordinate systems for the trimmed image segments and the assembled image can also be specified with Mosaic keywords.  These are of course similar to the WCS keywords defining coordinate transformations.  (Keep in mind that the WCS specification provides mappings for every pixel in the image segments, regardless of whether they are pre/over-scan or part of the actual image data.  The WCS header keywords by themselves cannot be used to assemble a trimmed image of a CCD, raft, or focal plane.)   In the Mosaic convention the first actual pixel in a row or column has pixel coordinate 1.  Pre-scan pixels will have 0 or negative coordinates and over-scan pixel coordinates will be larger than the number of actual CCD pixels in that row or column.
+
+In terms of assembling a trimmed image, the relevant Mosaic keywords define what is called the Detector Coordinate system.  The relation with the coordinate ranges in the individual sensors is through the {\tt DTM} and {\tt DTV} keywords.  These are the {\bf only} header keywords that {\it ds9} uses to calculate pixel coordinates in an image that it has assembled with the `Mosaic' option.  They are sort of like the 'C' coordinate system defined above for WCS CCD-level image {\bf but} the WCS coordinate systems are defined specifically for the Camera coordinate system, in which the CCDs are rotated by 90$^\circ$ from the direction that they normally would be viewed individually.  So the WCS 'C' keyword specifications include transpositions of the x and y directions, but the DTM keyword specifications do not.  The {\tt DTM} and {\tt DTV} keyword values for e2V and ITL are defined in Tables~\ref{tab:dtme2v} and \ref{tab:dtmitl}, respectively.
+
+\begin{table}
+\begin{align*}
+& {\tt DTM1\_1} =  1 - 2S_x \\
+& {\tt DTM1\_2} = 0 \\
+& {\tt DTM2\_1} = 0 \\
+& {\tt DTM2\_2} = 2S_x - 1 \\
+& {\tt DTV1} = ({\rm dimh} + 1)S_x + S_y \times {\rm dimh} \\
+& {\tt DTV2} = (2 \times {\rm dimv} + 1)(1 - S_x) \\
+\end{align*}
+\caption{Definition of Mosaic coordinate transformation keywords for e2V CCDs\label{tab:dtme2v}}
+
+\end{table}
+
+\begin{table}
+\begin{align*}
+& {\tt DTM1\_1} = -1 \\
+& {\tt DTM1\_2} = 0 \\
+& {\tt DTM2\_1} = 0 \\
+& {\tt DTM2\_2} = 2S_x - 1 \\
+& {\tt DTV1} = ({\rm dimh} + 1) + S_y \times {\rm dimh}  \\
+& {\tt DTV2} = (2 \times {\rm dimv} + 1) \times (1 - S_x) \\
+\end{align*}
+\caption{Definition of Mosaic coordinate transformation keywords for ITL CCDs\label{tab:dtmitl}}
+\end{table}
+
 
 \begin{table}
 \begin{align*}
