@@ -1,0 +1,12 @@
+WCSNAMEA= 'AMPLIFIER'          / Name of coordinate system
+CTYPE1A = 'Seg_X   '           / In the camera coordinate system
+CTYPE2A = 'Seg_Y   '           / In the camera coordinate system
+WCSNAMEC= 'CCD     '           / Name of coordinate system
+CTYPE1C = 'CCD_X   '           / In the camera coordinate system
+CTYPE2C = 'CCD_Y   '           / In the camera coordinate system
+WCSNAMER= 'RAFT    '           / Name of coordinate system
+CTYPE1R = 'RAFT_X  '           / In the camera coordinate system
+CTYPE2R = 'RAFT_Y  '           / In the camera coordinate system
+WCSNAMEF= 'FOCAL_PLANE'        / Name of coordinate system
+CTYPE1F = 'FP_X    '           / In the camera coordinate system
+CTYPE2F = 'FP_Y    '           / In the camera coordinate system
