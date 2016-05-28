@@ -27,4 +27,4 @@ CD2_2   =                 -1.0
 CRPIX1  =                545.0
 CRPIX2  =               4097.0
 DATASUM = '4140559662'         / checksum of the data records
-END
+END                                                                    

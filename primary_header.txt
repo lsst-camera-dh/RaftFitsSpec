@@ -33,4 +33,4 @@ HIERARCH AMP0-AZERO= 'F      '          / SYSTEM:AZERO value
 HIERARCH AMP2-ZERO_CHECK= 'off'         / Zero check on/off
 CHECKSUM= 'GhRWGZQVGfQVGZQV'   / checksum for the current HDU
 DATASUM = '0       '           / checksum of the data records
-END
+END                                                                    
