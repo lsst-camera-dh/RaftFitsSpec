@@ -422,7 +422,7 @@ $x_s, y_s$ & Segment, in as-read-out order & 1--512, 1--2002 & 1--509, 1--2000  
 $x_A, y_A$ & Amplifier, in as-seen-from-L3 order & 1--2002, 1--512  & 1--2000, 1--509 \\
 $x_c, y_c$ & CCD & 1--4004, 1--4096 & 1--4000, 1--4072  \\
 $x_r, y_r$ & Raft & 124--12577, 78--12623  & 126--12575, 90--12611 \\
-$x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126, 63375, 90--63411 \\
+$x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 \hline
 \end{tabular}
 \caption{Pixel coordinate systems and their ranges \label{tab:coords}}
@@ -453,16 +453,16 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126, 63375, 90--63411 \\
 & {\tt CD2\_2R} = 0 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
-& {\tt CRVAL1R} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
-& {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
+& {\tt CRVAL1R} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
+& {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
 & {\tt CD1\_1F} = 0  \\
 & {\tt CD1\_2F} = 1 - 2 \times S_x \\
 & {\tt CD2\_1F} = 1 - 2 \times S_x \\
 & {\tt CD2\_2F} = 0 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
-& {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 +  C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) +R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} -  {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty}  \\
+& {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 +  C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) +R_x \times {\rm raftx} \\
+& {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} -  {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty}  \\
 \end{align*}
 \caption{Definitions of WCS coordinate transformation keywords for e2V sensors\label{tab:e2vwcs}}
 \end{table}
@@ -491,16 +491,16 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126, 63375, 90--63411 \\
 & {\tt CD2\_2R} = 0 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
-& {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
-& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
+& {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
+& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
 & {\tt CD1\_1F} = 0 \\
 & {\tt CD1\_2F} = 1 - 2 \times S_x \\
 & {\tt CD2\_1F} = -1 \\
 & {\tt CD2\_2F} = 0 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
-& {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x(2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) + R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 +  C_y ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} + R_y \times {\rm rafty} \\
+& {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) + R_x \times {\rm raftx} \\
+& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 +  C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty} \\
 \end{align*}
 \caption{Definitions of WCS coordinate transformation keywords for ITL sensors\label{tab:itlwcs}}
 \end{table}
@@ -511,18 +511,7 @@ The WCS FITS specification includes required keywords to name the coordinate sys
 
 \begin{table}
 \begin{alltt}
-WCSNAMEA= 'AMPLIFIER'          / Name of coordinate system
-CTYPE1A = 'Seg_X   '           / In the camera coordinate system
-CTYPE2A = 'Seg_Y   '           / In the camera coordinate system
-WCSNAMEC= 'CCD     '           / Name of coordinate system
-CTYPE1C = 'CCD_X   '           / In the camera coordinate system
-CTYPE2C = 'CCD_Y   '           / In the camera coordinate system
-WCSNAMER= 'RAFT    '           / Name of coordinate system
-CTYPE1R = 'RAFT_X  '           / In the camera coordinate system
-CTYPE2R = 'RAFT_Y  '           / In the camera coordinate system
-WCSNAMEF= 'FOCAL_PLANE'        / Name of coordinate system
-CTYPE1F = 'FP_X    '           / In the camera coordinate system
-CTYPE2F = 'FP_Y    '           / In the camera coordinate system
+\input{other_mosaic_keywords.txt}
 \end{alltt}
 \caption{WCS header keywords to define the names of the coordinate systems and their axes.\label{tab:otherwcs}}
 \end{table}
@@ -559,12 +548,12 @@ In terms of assembling a trimmed image, the relevant Mosaic keywords define what
 
 \begin{table}
 \begin{align*}
-& {\tt DTM1\_1} =  1 - 2S_x \\
+& {\tt DTM1\_1} =  1 - 2 \times S_x \\
 & {\tt DTM1\_2} = 0 \\
 & {\tt DTM2\_1} = 0 \\
-& {\tt DTM2\_2} = 2S_x - 1 \\
-& {\tt DTV1} = ({\rm dimh} + 1)S_x + S_y \times {\rm dimh} \\
-& {\tt DTV2} = (2 \times {\rm dimv} + 1)(1 - S_x) \\
+& {\tt DTM2\_2} = 2 \times S_x - 1 \\
+& {\tt DTV1} = ({\rm dimh} + 1 + 2 \times {\rm preh}) \times S_x + S_y \times {\rm dimh} - {\rm preh} \\
+& {\tt DTV2} = (2 \times {\rm dimv} + 1) \times (1 - S_x) \\
 \end{align*}
 \caption{Definition of Mosaic coordinate transformation keywords for e2V CCDs\label{tab:dtme2v}}
 
@@ -575,8 +564,8 @@ In terms of assembling a trimmed image, the relevant Mosaic keywords define what
 & {\tt DTM1\_1} = -1 \\
 & {\tt DTM1\_2} = 0 \\
 & {\tt DTM2\_1} = 0 \\
-& {\tt DTM2\_2} = 2S_x - 1 \\
-& {\tt DTV1} = ({\rm dimh} + 1) + S_y \times {\rm dimh}  \\
+& {\tt DTM2\_2} = 2 \times S_x - 1 \\
+& {\tt DTV1} = ({\rm dimh} + 1 + 2 \times {\rm preh}) + S_y \times {\rm dimh} - {\rm preh}  \\
 & {\tt DTV2} = (2 \times {\rm dimv} + 1) \times (1 - S_x) \\
 \end{align*}
 \caption{Definition of Mosaic coordinate transformation keywords for ITL CCDs\label{tab:dtmitl}}
@@ -589,7 +578,7 @@ In terms of assembling a trimmed image, the relevant Mosaic keywords define what
 & {\tt DATASEC} =~'[ \{{\rm preh} + 1\} : \{{\rm preh} + {\rm dimh}\}, 1 :  \{{\rm dimv}\}]' \\
 & {\tt DETSEC} =~'[ \{dsx_1\} : \{dsx_2\}, \{dsy_1\}: \{dsy_2\}]' \\
 \end{align*}
-\caption{Definitions of Mosaic keywords\label{tab:detsize}}
+\caption{Definitions of Mosaic keywords for assembling \& trimming single-CCD images\label{tab:detsize}}
 \end{table}
 
 Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASEC} keywords, which depend on the sizes of the CCD segments, but not on the locations of the readout notes.  For the specifications for the {\tt DETSEC} keyword, which do depend on the location of the readout node see Tables~\ref{tab:detsece2v} and \ref{tab:detsecitl} for e2V and ITL CCDs, respectively.  In each of these tables, the quantities in \{ \} are understood to be replaced by the corresponding numerical values in the FITS headers.  The other formatting, with single quote marks, square brackets, colons, and commas, is understood to be part of the header keyword specifications.
