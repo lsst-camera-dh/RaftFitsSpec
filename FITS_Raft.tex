@@ -61,6 +61,8 @@
 \section{Change History}
 Initial draft in progress.  \red{Issues for discussion are highlighted in red.}\
 
+\red{1 June:  Switched from CD to PC/CDELT keywords for representing the WCS coordinates} 
+
 \red{31 May:  Corrected WCS CRVAL2 specifications for horizontal pre-scan.}
 
 \red{20 May:  Added DTM/DTV keyword specifications to define the pixel coordinates for an assembled single-CCD image}
@@ -107,7 +109,7 @@ The directory structure for raft-level measurements is designed to extend from m
 
 \red{An example with the desired directory path:}
 
-\red{{\tt .../sraft22/dark\_acq/361/s12/E2V-CCD250-088\_dark\_dark\_3\_20160121191343.fits}}
+\red{{\tt .../sraft22/dark\_acq/361/s12/E2V-CPC250-088\_dark\_dark\_3\_20160121191343.fits}}
 
 %\red{N.B. This organization is not currently possible with the Job Harness system}
 
@@ -204,6 +206,7 @@ This example is the first image extension of an image file for an ITL sensor.  T
 %\ref{sec:coords_itl}.
 
 \begin{table}
+\tiny
 \begin{alltt}
 \input{image_header_seg10_ITL.txt}
 \end{alltt}
@@ -215,6 +218,7 @@ This example is the first image extension of an image file for an ITL sensor.  T
 This is an example of an image extension for an e2V sensor.  It is the first segment (Segment10) in the file.
 
 \begin{table}
+\tiny
 \begin{alltt}
 \input{image_header_seg10_E2V.txt}
 \end{alltt}
@@ -390,15 +394,15 @@ The FITS World Coordinate System (WCS; see Sec. 8 of [4]) keyword specification 
 
 The header keywords define the origin and any rotation/transposition of the two-dimensional coordinate systems.   No scaling is required -- the coordinate systems are all defined in terms of pixels.  At the amplifier level, the transformations needed rotate the segments by 90$^\circ$ and, depending on the location of the readout node, reverse the segment image in x and/or y.  After these transformations, no further rotations are needed and relative to the transformations for {\tt A}, the transformations to {\tt C}, {\tt R}, and {\tt F} coordinate systems involve only shifts of the coordinate origin.
 
-For {\tt A} the keywords defining the transformation are {\tt CRVAL1A}, {\tt CRVAL2A}, {\tt CRPIX1A}, {\tt CRPIX2A}, {\tt CD1\_1A}, {\tt CD1\_2A}, {\tt CD2\_1A}, and {\tt CD2\_2A}.  These define the transformation between segment coordinates ($x_s, y_s$) (i.e., representing the segment image as recorded in the FITS file) and Amplifier coordinates ($x_A, y_A$) (representing the segment image as transformed into the `viewed through L3' orientation).  Specifically,
+For {\tt A} the keywords defining the transformation are {\tt CRVAL1A}, {\tt CRVAL2A}, {\tt CRPIX1A}, {\tt CRPIX2A}, {\tt PC1\_1A}, {\tt PC1\_2A}, {\tt PC2\_1A}, and {\tt PC2\_2A}.  These define the transformation between segment coordinates ($x_s, y_s$) (i.e., representing the segment image as recorded in the FITS file) and Amplifier coordinates ($x_A, y_A$) (representing the segment image as transformed into the `viewed through L3' orientation).  Specifically,
 
 \begin{equation}
-x_A = {\tt CD1\_1A} \times (x_s -{\tt CRPIX1A}) + {\tt CD1\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL1A}
+x_A = {\tt PC1\_1A} \times (x_s -{\tt CRPIX1A}) + {\tt PC1\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL1A}
 \end{equation}
 
 and
 \begin{equation}
-y_A = {\tt CD2\_1A} \times (x_s - {\tt CRPIX1A}) + {\tt CD2\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL2A}
+y_A = {\tt PC2\_1A} \times (x_s - {\tt CRPIX1A}) + {\tt PC2\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL2A}
 \end{equation}
 
 %For reference, $x_s$ is in the range [1, dimh] and $y_s$ is in the range [1, dimv].  That is, they are in the range of the first and second dimensions of the images of the individual segments.  
@@ -436,34 +440,42 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 
 \begin{table}
 \begin{align*}
-& {\tt CD1\_1A} = 0 \\
-& {\tt CD1\_2A} = 1 - 2 \times S_x \\
-& {\tt CD2\_1A} = 1 - 2 \times S_x \\
-& {\tt CD2\_2A} = 0 \\
+& {\tt PC1\_1A} = 0 \\
+& {\tt PC1\_2A} = 1 - 2 \times S_x \\
+& {\tt PC2\_1A} = 1 - 2 \times S_x \\
+& {\tt PC2\_2A} = 0 \\
+& {\tt CDELT1A} = 1 \\
+& {\tt CDELT2A} = 1 \\
 & {\tt CRPIX1A} = 0 \\
 & {\tt CRPIX2A} = 0 \\
 & {\tt CRVAL1A }= S_x \times ({\rm dimv} + 1) \\
 & {\tt CRVAL2A} = S_x \times ({\rm dimh} + 1) + (2 \times S_x - 1) \times {\rm preh} \\
-& {\tt CD1\_1C} = 0  \\
-& {\tt CD1\_2C} = 1 - 2 \times S_x \\
-& {\tt CD2\_1C} = 1 - 2 \times S_x \\
-& {\tt CD2\_2C} = 0 \\
+& {\tt PC1\_1C} = 0  \\
+& {\tt PC1\_2C} = 1 - 2 \times S_x \\
+& {\tt PC2\_1C} = 1 - 2 \times S_x \\
+& {\tt PC2\_2C} = 0 \\
+& {\tt CDELT1C} = 1 \\
+& {\tt CDELT2C} = 1 \\
 & {\tt CRPIX1C} = 0 \\
 & {\tt CRPIX2C} = 0 \\
 & {\tt CRVAL1C} = S_x \times (2 \times {\rm dimv} + 1) \\
 & {\tt CRVAL2C} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh}  + (2 \times S_x - 1) \times {\rm preh}  \\
-& {\tt CD1\_1R} = 0  \\
-& {\tt CD1\_2R} = 1 - 2 \times S_x \\
-& {\tt CD2\_1R} = 1 - 2 \times S_x \\
-& {\tt CD2\_2R} = 0 \\
+& {\tt PC1\_1R} = 0  \\
+& {\tt PC1\_2R} = 1 - 2 \times S_x \\
+& {\tt PC2\_1R} = 1 - 2 \times S_x \\
+& {\tt PC2\_2R} = 0 \\
+& {\tt CDELT1R} = 1 \\
+& {\tt CDELT2R} = 1 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
 & {\tt CRVAL1R} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
 & {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) +  \\  &\qquad {} (2 \times S_x - 1) \times {\rm preh} \\
-& {\tt CD1\_1F} = 0  \\
-& {\tt CD1\_2F} = 1 - 2 \times S_x \\
-& {\tt CD2\_1F} = 1 - 2 \times S_x \\
-& {\tt CD2\_2F} = 0 \\
+& {\tt PC1\_1F} = 0  \\
+& {\tt PC1\_2F} = 1 - 2 \times S_x \\
+& {\tt PC2\_1F} = 1 - 2 \times S_x \\
+& {\tt PC2\_2F} = 0 \\
+& {\tt CDELT1F} = 1 \\
+& {\tt CDELT2F} = 1 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
 & {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 +  C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) +R_x \times {\rm raftx} \\
@@ -474,34 +486,42 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 
 \begin{table}
 \begin{align*}
-& {\tt CD1\_1A} = 0 \\
-& {\tt CD1\_2A} = 1 - 2 \times S_x \\
-& {\tt CD2\_1A} = -1 \\
-& {\tt CD2\_2A} = 0 \\
+& {\tt PC1\_1A} = 0 \\
+& {\tt PC1\_2A} = 1 - 2 \times S_x \\
+& {\tt PC2\_1A} = -1 \\
+& {\tt PC2\_2A} = 0 \\
+& {\tt CDELT1A} = 1 \\
+& {\tt CDELT2A} = 1 \\
 & {\tt CRPIX1A} = 0 \\
 & {\tt CRPIX2A} = 0 \\
 & {\tt CRVAL1A} = S_x \times({\rm dimv} + 1) \\
 & {\tt CRVAL2A} = {\rm dimh} + 1 - {\rm preh} \\
-& {\tt CD1\_1C} = 0 \\
-& {\tt CD1\_2C} = 1 - 2 \times S_x \\
-& {\tt CD2\_1C} = -1 \\
-& {\tt CD2\_2C} = 0 \\
+& {\tt PC1\_1C} = 0 \\
+& {\tt PC1\_2C} = 1 - 2 \times S_x \\
+& {\tt PC2\_1C} = -1 \\
+& {\tt PC2\_2C} = 0 \\
+& {\tt CDELT1C} = 1 \\
+& {\tt CDELT2C} = 1 \\
 & {\tt CRPIX1C} = 0 \\
 & {\tt CRPIX2C} = 0 \\
 & {\tt CRVAL1C} = S_x \times(2 \times {\rm dimv} + 1) \\
 & {\tt CRVAL2C} = {\rm dimh} + 1 + S_y \times {\rm dimh} - {\rm preh} \\
-& {\tt CD1\_1R} = 0 \\
-& {\tt CD1\_2R} = 1 - 2 \times S_x \\
-& {\tt CD2\_1R} = -1 \\
-& {\tt CD2\_2R} = 0 \\
+& {\tt PC1\_1R} = 0 \\
+& {\tt PC1\_2R} = 1 - 2 \times S_x \\
+& {\tt PC2\_1R} = -1 \\
+& {\tt PC2\_2R} = 0 \\
+& {\tt CDELT1C} = 1 \\
+& {\tt CDELT2C} = 1 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
 & {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
 & {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) - {\rm preh} \\
-& {\tt CD1\_1F} = 0 \\
-& {\tt CD1\_2F} = 1 - 2 \times S_x \\
-& {\tt CD2\_1F} = -1 \\
-& {\tt CD2\_2F} = 0 \\
+& {\tt PC1\_1F} = 0 \\
+& {\tt PC1\_2F} = 1 - 2 \times S_x \\
+& {\tt PC2\_1F} = -1 \\
+& {\tt PC2\_2F} = 0 \\
+& {\tt CDELT1F} = 1 \\
+& {\tt CDELT2F} = 1 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
 & {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) + R_x \times {\rm raftx} \\
