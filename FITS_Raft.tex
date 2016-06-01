@@ -397,18 +397,18 @@ The header keywords define the origin and any rotation/transposition of the two-
 For {\tt A} the keywords defining the transformation are {\tt CRVAL1A}, {\tt CRVAL2A}, {\tt CRPIX1A}, {\tt CRPIX2A}, {\tt PC1\_1A}, {\tt PC1\_2A}, {\tt PC2\_1A}, and {\tt PC2\_2A}.  These define the transformation between segment coordinates ($x_s, y_s$) (i.e., representing the segment image as recorded in the FITS file) and Amplifier coordinates ($x_A, y_A$) (representing the segment image as transformed into the `viewed through L3' orientation).  Specifically,
 
 \begin{equation}
-x_A = {\tt PC1\_1A} \times (x_s -{\tt CRPIX1A}) + {\tt PC1\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL1A}
+x_A = {\tt PC1\_1A} \times (x_s -{\tt CRPIX1A}) \times {\tt CDELT1A} + {\tt PC1\_2A} \times (y_s - {\tt CRPIX2A}) \times {\tt CDELT1A} + {\tt CRVAL1A}
 \end{equation}
 
 and
 \begin{equation}
-y_A = {\tt PC2\_1A} \times (x_s - {\tt CRPIX1A}) + {\tt PC2\_2A} \times (y_s - {\tt CRPIX2A}) + {\tt CRVAL2A}
+y_A = {\tt PC2\_1A} \times (x_s - {\tt CRPIX1A}) \times {\tt CDELT2A} + {\tt PC2\_2A} \times (y_s - {\tt CRPIX2A}) \times {\tt CDELT2A} + {\tt CRVAL2A}
 \end{equation}
 
 %For reference, $x_s$ is in the range [1, dimh] and $y_s$ is in the range [1, dimv].  That is, they are in the range of the first and second dimensions of the images of the individual segments.  
 The transformation equations defining ($x_c, y_c$), ($x_r, y_r$), and ($x_f, y_f$) are the same as above, with the {\tt A} keywords replaced by their {\tt C}, {\tt R}, and {\tt F} versions, respectively.
 
-Because the transformation matrix does not change the pixel scale, the {\tt CD} values are always $\pm1$ or 0.  Similarly, for these transformations the offsets are always in units of pixels.  For convenience all {\tt CRPIX} values will be defined as 0.  The offsets are then determined only by the {\tt CRVAL} keyword values.
+Because the transformation matrix does not change the pixel scale, the {\tt CDELT} values are always 1, and the {\tt PC} values are always $\pm1$ or 0, representing only transpositions or inversions.  For these transformations the offsets are always in units of pixels.  For convenience all {\tt CRPIX} values will be defined as 0.  The offsets are then determined only by the {\tt CRVAL} keyword values.
 
 Tables \ref{tab:e2vwcs} and \ref{tab:itlwcs} present the WCS keyword values in terms of $S$, $C$, $R$ and the dimensional quantities of Table~\ref{tab:dims}, for e2V and ITL sensors, respectively.  
 
