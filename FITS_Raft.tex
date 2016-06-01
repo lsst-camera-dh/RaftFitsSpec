@@ -38,7 +38,7 @@
 \fancyfoot{}
 \fancyhead[LO,LE]{LCA-13501}
 \fancyhead[CO,CE]{FITS Format Specification for Science Rafts}
-\fancyhead[RO,RE]{Page \thepage~of XX}
+\fancyhead[RO,RE]{Page \thepage~of 18}
 
 \usepackage{alltt}
 
@@ -59,7 +59,9 @@
 \listoftables
 
 \section{Change History}
-Initial draft in progress.  \red{Issues for discussion are highlighted in red.}
+Initial draft in progress.  \red{Issues for discussion are highlighted in red.}\
+
+\red{31 May:  Corrected WCS CRVAL2 specifications for horizontal pre-scan.}
 
 \red{20 May:  Added DTM/DTV keyword specifications to define the pixel coordinates for an assembled single-CCD image}
 
@@ -348,7 +350,8 @@ y_c = (x_s + S_y \times {\rm dimh})  (1 - S_x) + [1 - x_s + (S_y + 1) \times {\r
 or (for ITL CCDs)
 
 \begin{equation}
-y_c = (1 - x_s + (S_y  + 1) \times {\rm dimh} )  (1 - S_x) + [1 - x_s + (S_y + 1) \times {\rm dimh}] S_x
+%y_c = (1 - x_s + (S_y  + 1) \times {\rm dimh} )  (1 - S_x) + [1 - x_s + (S_y + 1) \times {\rm dimh}] S_x
+y_c = 1 - x_s + (S_y  + 1) \times {\rm dimh} 
 \end{equation}
 
 The corresponding pixel coordinates in the raft are:
@@ -405,7 +408,9 @@ Because the transformation matrix does not change the pixel scale, the {\tt CD} 
 
 Tables \ref{tab:e2vwcs} and \ref{tab:itlwcs} present the WCS keyword values in terms of $S$, $C$, $R$ and the dimensional quantities of Table~\ref{tab:dims}, for e2V and ITL sensors, respectively.  
 
-{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer either needs to be aware of (and apply) the trimming first\footnote{For example, currently {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present; see Section~\ref{sec:mosaic}.}.
+{\bf N.B.:} The segment coordinate $x_s$ defined above DOES NOT INCLUDE pre-scan pixels.  The WCS coordinate transformations are applied (e.g., by {\it ds9}) using pixel coordinates for the entire stored image arrays.  Because the Camera coordinate system is rotated by 90$^\circ$ from the CCD system, accounting for the horizontal pre-scan in the WCS projections means adjusting the {\tt CRVAL2} keyword values.  These offsets are included in the expressions in Tables~\ref{tab:e2vwcs} and \ref{tab:itlwcs}.  You will notice that for E2V CCDs the sign of the offset depends on the value of $S_x$.
+
+{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer either needs to be aware of (and apply) the trimming first\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  However, if it is asked to assemble an image using the Mosaic keywords (with the {\tt -mosaicimage iraf} option), then {\it ds9} can calculate and display the correct WCS coordinate values for the assembled image; see Section~\ref{sec:mosaic}.}.
 
 \subsection{Summary of Coordinate Systems}
 Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  The focal plane coordinate ranges are listed separately for the x and y directions; not all combinations of x and y values in those ranges lie within a raft.
@@ -438,7 +443,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1A} = 0 \\
 & {\tt CRPIX2A} = 0 \\
 & {\tt CRVAL1A }= S_x \times ({\rm dimv} + 1) \\
-& {\tt CRVAL2A} = S_x \times ({\rm dimh} + 1) \\
+& {\tt CRVAL2A} = S_x \times ({\rm dimh} + 1) + (2 \times S_x - 1) \times {\rm preh} \\
 & {\tt CD1\_1C} = 0  \\
 & {\tt CD1\_2C} = 1 - 2 \times S_x \\
 & {\tt CD2\_1C} = 1 - 2 \times S_x \\
@@ -446,7 +451,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1C} = 0 \\
 & {\tt CRPIX2C} = 0 \\
 & {\tt CRVAL1C} = S_x \times (2 \times {\rm dimv} + 1) \\
-& {\tt CRVAL2C} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh}  \\
+& {\tt CRVAL2C} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh}  + (2 \times S_x - 1) \times {\rm preh}  \\
 & {\tt CD1\_1R} = 0  \\
 & {\tt CD1\_2R} = 1 - 2 \times S_x \\
 & {\tt CD2\_1R} = 1 - 2 \times S_x \\
@@ -454,7 +459,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
 & {\tt CRVAL1R} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
-& {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
+& {\tt CRVAL2R} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) +  \\  &\qquad {} (2 \times S_x - 1) \times {\rm preh} \\
 & {\tt CD1\_1F} = 0  \\
 & {\tt CD1\_2F} = 1 - 2 \times S_x \\
 & {\tt CD2\_1F} = 1 - 2 \times S_x \\
@@ -462,7 +467,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
 & {\tt CRVAL1F} = S_x \times (2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 +  C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) +R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} -  {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty}  \\
+& {\tt CRVAL2F} = S_x \times ({\rm dimh} + 1) + S_y \times {\rm dimh} +  {\rm gap\_outy} + ({\rm ccdpy} -  {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty} + (2 \times S_x - 1) \times {\rm preh}  \\
 \end{align*}
 \caption{Definitions of WCS coordinate transformation keywords for e2V sensors\label{tab:e2vwcs}}
 \end{table}
@@ -476,7 +481,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1A} = 0 \\
 & {\tt CRPIX2A} = 0 \\
 & {\tt CRVAL1A} = S_x \times({\rm dimv} + 1) \\
-& {\tt CRVAL2A} = {\rm dimh} + 1 \\
+& {\tt CRVAL2A} = {\rm dimh} + 1 - {\rm preh} \\
 & {\tt CD1\_1C} = 0 \\
 & {\tt CD1\_2C} = 1 - 2 \times S_x \\
 & {\tt CD2\_1C} = -1 \\
@@ -484,7 +489,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1C} = 0 \\
 & {\tt CRPIX2C} = 0 \\
 & {\tt CRVAL1C} = S_x \times(2 \times {\rm dimv} + 1) \\
-& {\tt CRVAL2C} = {\rm dimh} + 1 + S_y \times {\rm dimh} \\
+& {\tt CRVAL2C} = {\rm dimh} + 1 + S_y \times {\rm dimh} - {\rm preh} \\
 & {\tt CD1\_1R} = 0 \\
 & {\tt CD1\_2R} = 1 - 2 \times S_x \\
 & {\tt CD2\_1R} = -1 \\
@@ -492,7 +497,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
 & {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
-& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) \\
+& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) - {\rm preh} \\
 & {\tt CD1\_1F} = 0 \\
 & {\tt CD1\_2F} = 1 - 2 \times S_x \\
 & {\tt CD2\_1F} = -1 \\
@@ -500,7 +505,7 @@ $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
 & {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) + R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 +  C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty} \\
+& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 +  C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty} - {\rm preh} \\
 \end{align*}
 \caption{Definitions of WCS coordinate transformation keywords for ITL sensors\label{tab:itlwcs}}
 \end{table}
@@ -513,7 +518,7 @@ The WCS FITS specification includes required keywords to name the coordinate sys
 \begin{alltt}
 \input{other_mosaic_keywords.txt}
 \end{alltt}
-\caption{WCS header keywords to define the names of the coordinate systems and their axes.\label{tab:otherwcs}}
+\caption{WCS header keywords that define the names of the coordinate systems and their axes.\label{tab:otherwcs}}
 \end{table}
 
 \subsection{NOAO Mosaic FITS Keywords for Single-Sensor Images\label{sec:mosaic}}
@@ -586,7 +591,7 @@ Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASE
 \begin{table}
 \begin{align*}
 & dsx_1 = (S_y \times {\rm dimh} + 1)(1 - S_x) + (S_y + 1) \times {\rm dimh} \times S_x  \\
-& dsx_2 = (S_y +1)  \times {\rm dimh} \times (1 - S_x) + (S_y \times {\rm dimh} + 1) S_x \\
+& dsx_2 = (S_y +1)  \times {\rm dimh} \times (1 - S_x) + (S_y \times {\rm dimh} + 1) \times S_x \\
 & dsy_1 = 2 \times {\rm dimv} \times (1 - S_x) +  S_x \\
 & dsy_2 = ({\rm dimv} + 1)(1 - S_x) + {\rm dimv}  \times S_x \\ 
 \end{align*}
@@ -596,7 +601,7 @@ Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASE
 \begin{table}
 \begin{align*}
 & dsx_1 = (S_y +1) \times {\rm dimh} \times (1 - S_x) + (S_y + 1) \times {\rm dimh} \times S_x  \\
-& dsx_2 = (S_y  \times {\rm dimh} + 1) \times (1 - S_x) + (S_y \times {\rm dimh} + 1) S_x \\
+& dsx_2 = (S_y  \times {\rm dimh} + 1) \times (1 - S_x) + (S_y \times {\rm dimh} + 1) \times S_x \\
 & dsy_1 = 2 \times {\rm dimv} \times (1 - S_x) +  S_x \\
 & dsy_2 = ({\rm dimv} + 1)(1 - S_x) + {\rm dimv}  \times S_x \\ 
 \end{align*}
