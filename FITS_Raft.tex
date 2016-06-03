@@ -61,6 +61,10 @@
 \section{Change History}
 Initial draft in progress.  \red{Issues for discussion are highlighted in red.}\
 
+\red{3 June:  Some clarifications in tables, clean-up of text}
+
+\red{1 June:  Corrected description of the origin of the Raft coordinate system.}
+
 \red{1 June:  Switched from CD to PC/CDELT keywords for representing the WCS coordinates} 
 
 \red{31 May:  Corrected WCS CRVAL2 specifications for horizontal pre-scan.}
@@ -105,11 +109,7 @@ Considerations of human readability, data curation, and automated processing mot
 
 The directory structure for raft-level measurements is designed to extend from measurements with single rafts (in TS8) to entire focal planes (with the BOT).  The naming convention is:
 
-{\bf rafts/<institution>/sraft\#\#/<acquisition type>/<job ID>/<s\#\#>}
-
-\red{An example with the desired directory path:}
-
-\red{{\tt .../sraft22/dark\_acq/361/s12/E2V-CPC250-088\_dark\_dark\_3\_20160121191343.fits}}
+\red{{\bf rafts/<institution>/sraft<raft number>/<acquisition type>/<job ID>/s<CCD number>} }
 
 %\red{N.B. This organization is not currently possible with the Job Harness system}
 
@@ -144,8 +144,9 @@ The directory structure for raft-level measurements is designed to extend from m
 \subsection{File Names}
 
 The file names for a given sensor, test type, and processing step shall be of the form
+
 %<sensor id>_<test type>_<image type>_<seq. info>_<time stamp>.fits
-<sensor id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits
+{\bf <CCD id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits }
 
 
 \red{TBD:  Include metrology files}
@@ -156,7 +157,8 @@ The file names for a given sensor, test type, and processing step shall be of th
 \hline
 {\bf Quantity} & {\bf Description} \\
 \hline
-{\bf <CCD id>} & {\bf s{\tt \#\#}}, where {\tt \#\#} are the coordinates of the CCD in the raft; each \# = 0--2, as defined in [2] \\
+%{\bf <CCD id>} & {\bf s{\tt \#\#}}, where {\tt \#\#} are the coordinates of the CCD in the raft; each \# = 0--2, as defined in [2] \\
+{\bf <CCD id> } & {\bf LSST Serial Number, e.g. E2V-CCD250-\#\#\# or ITL-3800C-\#\#\#} \\
 {\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
 {\bf <image type>} & One of bias, dark, fe55, or flat \\
 {\bf <seq. info>} & Normally a 3-digit sequence number such as 000, 001, 002. \tablefootnote{Photon Transfer Curve data (pairs of flats) shall have exposure times and flat1/flat2 designators, e.g., 0010.0s\_flat1} \\
@@ -167,9 +169,16 @@ The file names for a given sensor, test type, and processing step shall be of th
 \end{centering}
 \end{table}
 
+\red{An example with the desired directory path:}
+
+\red{{\tt rafts/bnl/sraft22/dark\_acq/361/s12/E2V-CCD250-088\_dark\_dark\_003\_20160121191343.fits}}
+
+
 \section{Internal File Organization}
 
-The image files are multiple-extension FITS files with basic (not site-specific) information in the primary header, then 16 image extensions (one per segment), followed by test condition, CCD operating condition, and site-specific extension(s).  For the latter, examples are given here but are not formally part of the specification.  N.B.: The analysis scripts should not depend on information in the site-specific extensions.
+The image files are multiple-extension FITS files with basic (not site-specific) information in the primary header, then 16 image extensions (one per segment), followed by test condition, CCD operating condition, and site-specific extension(s).  For the latter, examples are given here but are not formally part of the specification.  
+
+{\bf N.B.:} The analysis scripts should not depend on information in the site-specific extensions.
 
 \subsection{Image Extensions}
 
@@ -202,7 +211,7 @@ This example is the primary header of an image file for an ITL sensor, although 
 \end{table}
 
 \subsection{Image Extension Header (ITL)}
-This example is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~TBD.
+This example is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~\ref{sec:pixelcoords}.
 %\ref{sec:coords_itl}.
 
 \begin{table}
@@ -229,9 +238,18 @@ This is an example of an image extension for an e2V sensor.  It is the first seg
 
 \red{
 \begin{itemize}
+\item{Will REB-related keywords be in this extension or in an extension of their own?}
 \item{What are the allowed values of the FILTER keyword?}
 \item{LCA-10140 has the MONOWL keyword (Monochromator wavelength setting), but it is not in the example header}
 \item{LCA-10140 has PD\_SER (Monitor Photodiode serial number), but this keyword is not in the example header.}
+\end{itemize}
+}
+
+\subsection{Photodiode Readings Header}
+
+\red{
+\begin{itemize}
+\item{This is a placeholder for photodiode current readings.  This may be a FITS binary table.  It probably needs to be the last extension in the file.}
 \end{itemize}
 }
 
@@ -258,7 +276,7 @@ This is an example of an image extension for an e2V sensor.  It is the first seg
 \end{table}
 
 
-\section{Pixel Coordinate Mapping}
+\section{Pixel Coordinate Mapping\label{sec:pixelcoords}}
 This section describes the calculations for mapping segments to sensors, rafts, and the focal plane, defining the shifts and rotations to make continuous pixel coordinate systems.  The pixel coordinate systems are based on the nominal layout of the rafts and focal plane as defined in [3], and are intended to be used primarily for visualization during I\&T of Science Rafts and of the Camera focal plane.  The relevant diagrams of [3] are reproduced in Figures 1--3.  The segments, CCDs, and rafts each have two-digit identifiers that correspond to their x, y locations in the layout.
 
 The transformations are developed here in terms of the FITS World Coordinate System (WCS) keyword specifications for FITS image data [ref].  The next subsection describes the WCS FITS keywords used.
@@ -271,7 +289,7 @@ The transformations are developed here in terms of the FITS World Coordinate Sys
 \subsection{Important Conventions}
 Note that the layout is represented in [3] as viewed through L3, i.e., looking down on the CCDs.  In this orientation, the x direction of the Camera Coordinate System is toward the $left$ and the y direction is $up$.  This convention is adopted here.  Note also that by this convention, the nominal x (serial) direction of a sensor is oriented along the y direction of the Camera Coordinate System.  
 
-By convention for FITS image data, the first pixel in an image has coordinates (1, 1).  This is adopted here for sensors and rafts.  In particular, the first pixel in an assembled raft image is assigned to the lower right pixel of Segment 00 in CCD 00, regardless of whether that CCD is actually present.  
+By convention for FITS image data, the first pixel in an image has coordinates (1, 1).  This is adopted here for sensors and rafts.  In particular, the first pixel in an assembled raft image is assigned to the lower right corner of the raft.  This pixel is not within a CCD (see Fig. 2). 
 
 For focal plane-level images, the origin of the pixel coordinate system is defined as if a Raft 00 were present.  That is, pixel (1, 1) would have been in segment 00 of CCD 00 in Raft 00.  The only other potential reference point, the center of the Camera focal plane (i.e., the center of CCD 11 in Raft 22) has the disadvantage of being between pixels, and adopting it as the origin would mean including 0.5 pixel offsets for pixel coordinates measured with respect to it.
 
@@ -300,7 +318,9 @@ In the following $S$ is the segment location designator, $C$ is the CCD location
 \end{figure}
 
 \subsection{Dimensions and Pitch}
-The relevant quantities for defining the pixel coordinate systems are listed in Table~\ref{tab:dims}.  All are extracted from the diagrams in [3].  The column {\bf Designator} lists the name of the corresponding variable in the algorithmic description of the coordinate calculation.  N.B. These variables are defined in terms of equivalent pixels, i.e., they are the physical dimensions divided by the pixel size.
+The relevant quantities for defining the pixel coordinate systems are listed in Table~\ref{tab:dims}.  All are extracted from the diagrams in [3].  The column {\bf Designator} lists the name of the corresponding variable in the algorithmic description of the coordinate calculation.  
+
+{\bf N.B.:} These variables are defined in terms of equivalent pixels, i.e., they are the physical dimensions divided by the pixel size.
 
 \begin{table}
 \begin{centering}
@@ -314,7 +334,7 @@ Active area  (x $\times$ y) \tablefootnote{Note that the dimensions are specifie
 CCD physical size & 4197 $\times$ 4200 & 4198 $\times$ 4198 & ccdpx $\times $ ccdpy \\
 %Pitch of CCDs & 4225 $\times$ 4225 & 4225 $\times$ 4225 & -- \\
 Inter-CCD gaps & 28 $\times$ 25 & 27 $\times$ 27 & gap\_inx $\times$ gap\_iny \\
-Pitch of rafts & 12700 & 12700 & raftx $\times$ rafty \\
+Pitch of rafts & 12700 $\times$ 12700 & 12700 $\times$ 12700 & raftx $\times$ rafty \\
 Gaps at edges of rafts & 26.5 $\times$ 25 & 26 $\times$ 26 & gap\_outx $\times$ gap\_outy \\
 \hline
 \end{tabular}
@@ -412,9 +432,9 @@ Because the transformation matrix does not change the pixel scale, the {\tt CDEL
 
 Tables \ref{tab:e2vwcs} and \ref{tab:itlwcs} present the WCS keyword values in terms of $S$, $C$, $R$ and the dimensional quantities of Table~\ref{tab:dims}, for e2V and ITL sensors, respectively.  
 
-{\bf N.B.:} The segment coordinate $x_s$ defined above DOES NOT INCLUDE pre-scan pixels.  The WCS coordinate transformations are applied (e.g., by {\it ds9}) using pixel coordinates for the entire stored image arrays.  Because the Camera coordinate system is rotated by 90$^\circ$ from the CCD system, accounting for the horizontal pre-scan in the WCS projections means adjusting the {\tt CRVAL2} keyword values.  These offsets are included in the expressions in Tables~\ref{tab:e2vwcs} and \ref{tab:itlwcs}.  You will notice that for E2V CCDs the sign of the offset depends on the value of $S_x$.
+{\bf N.B.:} The segment coordinate $x_s$ defined above {\bf does not include} pre-scan pixels.  The WCS coordinate transformations are applied (e.g., by {\it ds9}) using pixel coordinates for the entire stored image arrays.  Because the Camera coordinate system is rotated by 90$^\circ$ from the CCD system, accounting for the horizontal pre-scan in the WCS projections means adjusting the {\tt CRVAL2} keyword values.  These offsets are included in the expressions in Tables~\ref{tab:e2vwcs} and \ref{tab:itlwcs}.  You will notice that for e2V CCDs the sign of the offset depends on the value of $S_x$.
 
-{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer either needs to be aware of (and apply) the trimming first\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  However, if it is asked to assemble an image using the Mosaic keywords (with the {\tt -mosaicimage iraf} option), then {\it ds9} can calculate and display the correct WCS coordinate values for the assembled image; see Section~\ref{sec:mosaic}.}.
+{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to be apply the trimming before mapping the segments together\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  However, if it is asked to assemble an image using the Mosaic keywords (with the {\tt -mosaicimage iraf} option), then {\it ds9} can calculate and display the correct WCS coordinate values for the assembled image; see Section~\ref{sec:mosaic}.}.
 
 \subsection{Summary of Coordinate Systems}
 Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  The focal plane coordinate ranges are listed separately for the x and y directions; not all combinations of x and y values in those ranges lie within a raft.
@@ -555,7 +575,7 @@ The pixel dimensional parameters needed to define the Mosaic keywords are provid
 \hline
 {\bf Quantity} & {\bf e2V CCD} & {\bf ITL CCD} & {\bf Designator} \\
 \hline
-Segment pixels & 2002 $\times$ 512 (vertical $\times$ horizontal) & $2000 \times 509$ & dimv $\times$ dimh \\
+Segment pixels (vertical $\times$ horizontal) & 2002 $\times$ 512 & $2000 \times 509$ & dimv $\times$ dimh \\
 Pre-scan pixels & 10 & 3 & preh \\
 Over-scan pixels & 22 & 32 & overh \\
 Vertical over-scan pixels & 46 & 48 & overv \\
@@ -569,7 +589,9 @@ The basic Mosaic keywords in each image extension are {\tt DETSIZE}, a string de
 
 The coordinate systems for the trimmed image segments and the assembled image can also be specified with Mosaic keywords.  These are of course similar to the WCS keywords defining coordinate transformations.  (Keep in mind that the WCS specification provides mappings for every pixel in the image segments, regardless of whether they are pre/over-scan or part of the actual image data.  The WCS header keywords by themselves cannot be used to assemble a trimmed image of a CCD, raft, or focal plane.)   In the Mosaic convention the first actual pixel in a row or column has pixel coordinate 1.  Pre-scan pixels will have 0 or negative coordinates and over-scan pixel coordinates will be larger than the number of actual CCD pixels in that row or column.
 
-In terms of assembling a trimmed image, the relevant Mosaic keywords define what is called the Detector Coordinate system.  The relation with the coordinate ranges in the individual sensors is through the {\tt DTM} and {\tt DTV} keywords.  These are the {\bf only} header keywords that {\it ds9} uses to calculate pixel coordinates in an image that it has assembled with the `Mosaic' option.  They are sort of like the 'C' coordinate system defined above for WCS CCD-level image {\bf but} the WCS coordinate systems are defined specifically for the Camera coordinate system, in which the CCDs are rotated by 90$^\circ$ from the direction that they normally would be viewed individually.  So the WCS 'C' keyword specifications include transpositions of the x and y directions, but the DTM keyword specifications do not.  The {\tt DTM} and {\tt DTV} keyword values for e2V and ITL are defined in Tables~\ref{tab:dtme2v} and \ref{tab:dtmitl}, respectively.
+In terms of assembling a trimmed image, the relevant Mosaic keywords define what is called the Detector Coordinate system.  The relation with the coordinate ranges in the individual sensors is through the {\tt DTM} and {\tt DTV} keywords.  
+%These are the {\bf only} header keywords that {\it ds9} uses to calculate pixel coordinates in an image that it has assembled with the `Mosaic' option.  
+They are sort of like the 'C' coordinate system defined above for WCS CCD-level image {\bf but} the WCS coordinate systems are defined specifically for the Camera coordinate system, in which the CCDs are rotated by 90$^\circ$ from the direction that they normally would be viewed individually.  So the WCS 'C' keyword specifications include transpositions of the x and y directions, but the DTM keyword specifications do not.  The {\tt DTM} and {\tt DTV} keyword values for e2V and ITL are defined in Tables~\ref{tab:dtme2v} and \ref{tab:dtmitl}, respectively.
 
 \begin{table}
 \begin{align*}
@@ -606,7 +628,7 @@ In terms of assembling a trimmed image, the relevant Mosaic keywords define what
 \caption{Definitions of Mosaic keywords for assembling \& trimming single-CCD images\label{tab:detsize}}
 \end{table}
 
-Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASEC} keywords, which depend on the sizes of the CCD segments, but not on the locations of the readout notes.  For the specifications for the {\tt DETSEC} keyword, which do depend on the location of the readout node see Tables~\ref{tab:detsece2v} and \ref{tab:detsecitl} for e2V and ITL CCDs, respectively.  In each of these tables, the quantities in \{ \} are understood to be replaced by the corresponding numerical values in the FITS headers.  The other formatting, with single quote marks, square brackets, colons, and commas, is understood to be part of the header keyword specifications.
+Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASEC} keywords, which depend on the sizes of the CCD segments but not on the location of the readout node in the segments.  For the specifications for the {\tt DETSEC} keyword, which do depend on the location of the readout node see Tables~\ref{tab:detsece2v} and \ref{tab:detsecitl} for e2V and ITL CCDs, respectively.  In each of these tables, the quantities in \{ \} are understood to be replaced by the corresponding numerical values in the FITS headers.  The other formatting, with single quote marks, square brackets, colons, and commas, is understood to be part of the header keyword specifications.
 
 \begin{table}
 \begin{align*}
