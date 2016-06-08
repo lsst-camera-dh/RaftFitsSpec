@@ -65,6 +65,8 @@
 \section{Change History}
 Initial draft in progress.  \red{Issues for discussion are highlighted in red.}\
 
+\red{8 June:  Added serial/parallel coordinate systems for CCDs and rafts.  These are not going to be useful in {\it ds9} for the Mosaic keywords that we have defined but they do index the CCDs and rafts with the x (serial) coordinate increasing to the right and could be useful for `engineering' displays of CCDs and Rafts in some future display tool.}  
+ 
 \red{3 June:  Some clarifications in tables, clean-up of text}
 
 \red{1 June:  Corrected description of the origin of the Raft coordinate system.}
@@ -494,8 +496,8 @@ $x_A, y_A$ & Amplifier, in as-seen-from-L3 order & 1--2002, 1--512  & 1--2000, 1
 $x_c, y_c$ & CCD & 1--4004, 1--4096 & 1--4000, 1--4072  \\
 $x_r, y_r$ & Raft & 124--12577, 78--12623  & 126--12575, 90--12611 \\
 $x_f, y_f$ & Focal Plane & 124--63377, 78--63423 & 126--63375, 90--63411 \\
-$s_c, p_c$ & CCD (serial/parallel) & -- & -- \\
-$s_r, p_r$ & Raft (serial/parallel) & -- & -- \\
+$s_c, p_c$ & CCD (serial/parallel) & 1--4096, 1--4004 & 1--4072, 1--4000 \\
+$s_r, p_r$ & Raft (serial/parallel) & 78--12623, 124--12577 & 90--12611, 126--12575 \\
 \hline
 \end{tabular}
 \caption{Pixel coordinate systems and their ranges \label{tab:coords}}
