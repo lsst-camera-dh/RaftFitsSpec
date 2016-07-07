@@ -63,7 +63,9 @@
 \listoftables
 
 \section{Change History}
-Initial draft in progress.  \red{Issues for discussion are highlighted in red.}\
+Draft in progress.  \red{Open issues are highlighted in red.}\
+
+\red{7 July:  Corrected expressions for CRVAL1B and CRVAL1Q; both needed to have the horizontal prescan (preh) subtracted.  Max Turri noticed the error.  Minor edits to the text.}
 
 \red{8 June:  Added serial/parallel coordinate systems for CCDs and rafts.  These are not going to be useful in {\it ds9} for the Mosaic keywords that we have defined but they do index the CCDs and rafts with the x (serial) coordinate increasing to the right and could be useful for `engineering' displays of CCDs and Rafts in some future display tool.}  
  
@@ -478,12 +480,9 @@ Section~\ref{sec:wcscoords} presents the WCS keyword values in terms of $S$, $C$
 {\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to be apply the trimming before mapping the segments together\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  However, if it is asked to assemble an image using the Mosaic keywords (with the {\tt -mosaicimage iraf} option), then {\it ds9} can calculate and display the correct WCS coordinate values for the assembled image; see Section~\ref{sec:mosaic}.}.
 
 \subsection{Summary of Coordinate Systems}
-Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  The focal plane coordinate ranges are listed separately for the x and y directions; keep in mind that not all combinations of x and y values in those ranges lie within a raft.  Also shown are the serial/parallel coordinates for CCDs and rafts; as described above, these are rotated with respect to the Camera coordinate system.
+Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  Note that because the pitch of the rafts does not depend on the type of CCD, the coordinate {\bf specifications defined here will work for a hybrid focal plane} containing a combination of e2V-only and ITL-only rafts.  The focal plane coordinate ranges are listed separately for the x and y directions; keep in mind that not all combinations of x and y values in those ranges lie within a raft.  Also shown are the serial/parallel coordinates for CCDs and rafts; as described above, these are rotated with respect to the Camera coordinate system.
 
 \subsection{Evaluation of WCS Coordinate Keyword Values\label{sec:wcscoords}}
-
-
-
 
 \begin{table}
 \begin{centering}
@@ -600,8 +599,8 @@ The following equations define the WCS coordinate keyword values for ITL sensors
 & {\tt PC1\_2R} = 1 - 2 \times S_x \\
 & {\tt PC2\_1R} = -1 \\
 & {\tt PC2\_2R} = 0 \\
-& {\tt CDELT1C} = 1 \\
-& {\tt CDELT2C} = 1 \\
+& {\tt CDELT1R} = 1 \\
+& {\tt CDELT2R} = 1 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
 & {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
@@ -624,7 +623,7 @@ The following equations define the WCS coordinate keyword values for ITL sensors
 & {\tt CDELT2B} = 1 \\
 & {\tt CRPIX1B} = 0 \\
 & {\tt CRPIX2B} = 0 \\
-& {\tt CRVAL1B} = (S_s + 1) \times {\rm dimh} + 1 \\
+& {\tt CRVAL1B} = (S_s + 1) \times {\rm dimh} + 1 - {\rm preh} \\
 & {\tt CRVAL2B} = S_p \times (2 \times {\rm dimv} + 1)  \\
 & {\tt PC1\_1Q} = -1   \\
 & {\tt PC1\_2Q} = 0 \\
@@ -634,7 +633,7 @@ The following equations define the WCS coordinate keyword values for ITL sensors
 & {\tt CDELT2Q} = 1 \\
 & {\tt CRPIX1Q} = 0 \\
 & {\tt CRPIX2Q} = 0 \\
-& {\tt CRVAL1Q} = {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_s \times (8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + (S_s + 1) \times {\rm dimh} + 1  \\
+& {\tt CRVAL1Q} = {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_s \times (8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + (S_s + 1) \times {\rm dimh} + 1  - {\rm preh} \\
 & {\tt CRVAL2Q} = S_p \times (2 \times {\rm dimv} + 1) +  {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_p \times ( 2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
 \end{align*}
 %\caption{Definitions of WCS coordinate transformation keywords for ITL sensors\label{tab:itlwcs}}
