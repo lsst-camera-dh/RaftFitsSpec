@@ -65,6 +65,8 @@
 \section{Change History}
 Draft in progress.  \red{Open issues are highlighted in red.}\
 
+\red{12 July:  Corrected the expression for DTV1 for ITL sensors.  Max Turri noticed the error.  Minor edits to the text.}
+
 \red{7 July:  Corrected expressions for CRVAL1B and CRVAL1Q; both needed to have the horizontal prescan (preh) subtracted.  Max Turri noticed the error.  Minor edits to the text.}
 
 \red{8 June:  Added serial/parallel coordinate systems for CCDs and rafts.  These are not going to be useful in {\it ds9} for the Mosaic keywords that we have defined but they do index the CCDs and rafts with the x (serial) coordinate increasing to the right and could be useful for `engineering' displays of CCDs and Rafts in some future display tool.}  
@@ -430,7 +432,7 @@ and (for ITL sensors)
 s_c = 1 - x_s + (S_s + 1) \times {\rm dimh}
 \end{equation}
 
-For both types of CCD the parallel coordinate
+For both types of CCD the parallel coordinate is
 
 \begin{equation}
 p_c = y_s  (1 - S_p) + (2 \times {\rm dimv} - y_s + 1) S_p
@@ -477,7 +479,7 @@ Section~\ref{sec:wcscoords} presents the WCS keyword values in terms of $S$, $C$
 
 {\bf N.B.:} The segment coordinate $x_s$ defined above {\bf does not include} pre-scan pixels.  The WCS coordinate transformations are applied (e.g., by {\it ds9}) using pixel coordinates for the entire stored image arrays.  Because the Camera coordinate system is rotated by 90$^\circ$ from the CCD system, accounting for the horizontal pre-scan in the WCS projections means adjusting the {\tt CRVAL2} keyword values.  These offsets are included in the expressions in Section~\ref{sec:wcscoords}.  You will notice that for e2V CCDs the sign of the offset depends on the value of $S_x$.
 
-{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to be apply the trimming before mapping the segments together\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  However, if it is asked to assemble an image using the Mosaic keywords (with the {\tt -mosaicimage iraf} option), then {\it ds9} can calculate and display the correct WCS coordinate values for the assembled image; see Section~\ref{sec:mosaic}.}.
+{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to be apply the trimming before mapping the segments together\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  In addition {\it ds9} will not rotate the image segments by 90$^\circ$ when assembling a mosaic, as would need to do in order to display images in which the x axis of the Camera coordinate system is horizontal.  Even if you ask it to mosaic a CCD image in WCS c coordinates, {\it ds9} will use the Mosaic keywords to assemble the image (with the parallel readout direction vertical).  It will also calculate WCS c pixel coordinates for you but these will not make much sense because it has not actually assembled the image with the orientation specified in the WCS coordinates.}.
 
 \subsection{Summary of Coordinate Systems}
 Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  Note that because the pitch of the rafts does not depend on the type of CCD, the coordinate {\bf specifications defined here will work for a hybrid focal plane} containing a combination of e2V-only and ITL-only rafts.  The focal plane coordinate ranges are listed separately for the x and y directions; keep in mind that not all combinations of x and y values in those ranges lie within a raft.  Also shown are the serial/parallel coordinates for CCDs and rafts; as described above, these are rotated with respect to the Camera coordinate system.
@@ -703,7 +705,7 @@ They are sort of like the 'C' coordinate system defined above for WCS CCD-level 
 & {\tt DTM1\_2} = 0 \\
 & {\tt DTM2\_1} = 0 \\
 & {\tt DTM2\_2} = 2 \times S_x - 1 \\
-& {\tt DTV1} = ({\rm dimh} + 1 + 2 \times {\rm preh}) + S_y \times {\rm dimh} - {\rm preh}  \\
+& {\tt DTV1} = ({\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm preh}  \\
 & {\tt DTV2} = (2 \times {\rm dimv} + 1) \times (1 - S_x) \\
 \end{align*}
 \caption{Definition of Mosaic coordinate transformation keywords for ITL CCDs\label{tab:dtmitl}}
