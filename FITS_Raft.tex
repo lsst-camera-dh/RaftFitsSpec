@@ -45,7 +45,7 @@
 \usepackage{alltt}
 
 % Title page 
-\title{Specification for FITS Image Files from Raft and Focal Plane-Level Electro-Optical Tests}
+\title{LCA-13501:  Specification for FITS Image Files from Raft and Focal Plane-Level Electro-Optical Tests}
 
 \newcommand{\red}{\textcolor{red}}
 \newcommand{\blue}{\textcolor{blue}}
@@ -63,8 +63,12 @@
 \listoftables
 
 \section{Change History}
-Draft in progress.  \red{Open issues are highlighted in red.}\
+Draft in progress. % \red{Open issues are highlighted in red.}\
 
+\red{25 July: Corrected example headers in Tables 4 and 5.  WCSNAMEB, CTYPE1B, and CTYPE2B definitions had been duplicated, and WCSNAMEQ, CTYPE1Q, CTYPE2Q had been omitted.}
+
+\red{15 July: Simplified the expressions for dsx1 and dsx2 for ITL sensors.  The DTV1 expression had been correct, and the change implemented was only a reformatting.}
+  
 \red{12 July:  Corrected the expression for DTV1 for ITL sensors.  Max Turri noticed the error.  Minor edits to the text.}
 
 \red{7 July:  Corrected expressions for CRVAL1B and CRVAL1Q; both needed to have the horizontal prescan (preh) subtracted.  Max Turri noticed the error.  Minor edits to the text.}
@@ -705,7 +709,7 @@ They are sort of like the 'C' coordinate system defined above for WCS CCD-level 
 & {\tt DTM1\_2} = 0 \\
 & {\tt DTM2\_1} = 0 \\
 & {\tt DTM2\_2} = 2 \times S_x - 1 \\
-& {\tt DTV1} = ({\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm preh}  \\
+& {\tt DTV1} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm preh}  \\
 & {\tt DTV2} = (2 \times {\rm dimv} + 1) \times (1 - S_x) \\
 \end{align*}
 \caption{Definition of Mosaic coordinate transformation keywords for ITL CCDs\label{tab:dtmitl}}
@@ -735,8 +739,8 @@ Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASE
 
 \begin{table}
 \begin{align*}
-& dsx_1 = (S_y +1) \times {\rm dimh} \times (1 - S_x) + (S_y + 1) \times {\rm dimh} \times S_x  \\
-& dsx_2 = (S_y  \times {\rm dimh} + 1) \times (1 - S_x) + (S_y \times {\rm dimh} + 1) \times S_x \\
+& dsx_1 = (S_y +1) \times {\rm dimh}  \\
+& dsx_2 = S_y \times {\rm dimh} + 1 \\
 & dsy_1 = 2 \times {\rm dimv} \times (1 - S_x) +  S_x \\
 & dsy_2 = ({\rm dimv} + 1)(1 - S_x) + {\rm dimv}  \times S_x \\ 
 \end{align*}
