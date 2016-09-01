@@ -1,5 +1,5 @@
 XTENSION= 'IMAGE   '           / marks beginning of new HDU
-BITPIX  =                   16 /
+BITPIX  =                   32 /
 NAXIS   =                    2 / number of axes
 NAXIS1  =                  544 / size of the n'th axis
 NAXIS2  =                 2048 / size of the n'th axis
