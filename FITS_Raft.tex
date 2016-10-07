@@ -65,6 +65,8 @@
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
 
+\red{7 Oct:  Added DETSIZE keyword to example primary headers, now including separate examples for E2V and ITL.}
+
 \red{1 Sept: Corrected BITPIX values in example extension headers, added SEQFILE placeholder to primary header.}
 
 \red{25 July: Corrected example headers in Tables 4 and 5.  WCSNAMEB, CTYPE1B, and CTYPE2B definitions had been duplicated, and WCSNAMEQ, CTYPE1Q, CTYPE2Q had been omitted.}
@@ -205,7 +207,7 @@ The headers of the image extensions also define the pixel coordinate systems for
 \section{Example Headers}
 
 \subsection{Primary Header}
-This example is the primary header of an image file for an ITL sensor, although the primary header is not sensor-specific.  It goes without saying that values of many of the keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the format.
+Tables \ref{tab:primary_E2V} and \ref{tab:primary_ITL}  have example primary headers of image files for E2V and ITL sensors. The primary header is not sensor-specific; separate examples are included because they have different, fixed values of the DETSIZE keyword.  It goes without saying that values of many of the other keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the formats.
 
 %\red{
 %Points for discussion:
@@ -221,9 +223,16 @@ This example is the primary header of an image file for an ITL sensor, although 
 
 \begin{table}
 \begin{alltt}
-\input{primary_header.txt}
+\input{primary_header_E2V.txt}
 \end{alltt}
-\caption{Example primary header.\label{tab:primary}}
+\caption{Example primary header for an E2V sensor image file.\label{tab:primary_E2V}}
+\end{table}
+
+\begin{table}
+\begin{alltt}
+\input{primary_header_ITL.txt}
+\end{alltt}
+\caption{Example primary header for an ITL sensor image file.\label{tab:primary_ITL}}
 \end{table}
 
 \subsection{Image Extension Header (ITL)}
