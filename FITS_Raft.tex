@@ -65,6 +65,8 @@
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
 
+\red{12 Oct:  Updated directory path and file name specifications based on LSSTTD-690; added RUNNUM keyword to example primary headers}
+
 \red{7 Oct:  Added DETSIZE keyword to example primary headers, now including separate examples for E2V and ITL.}
 
 \red{1 Sept: Corrected BITPIX values in example extension headers, added SEQFILE placeholder to primary header.}
@@ -125,11 +127,15 @@ Considerations of human readability, data curation, and automated processing mot
 
 \subsection{Directory Structure}
 
-The directory structure for raft-level measurements is designed to extend from measurements with single rafts (in TS8) to entire focal planes (with the BOT).  The naming convention is:
+The directory structure for raft-level measurements is designed to extend from measurements with single rafts (in TS8) to entire focal planes when the rafts are installed in the cryostat.  {\bf N.B.:} Regarding the latter, the raft ID in the directory path is the hardware ID of the raft, not a designator of its location in the grid. 
 
-\red{{\bf rafts/<institution>/sraft<raft number>/<acquisition type>/<job ID>/s<CCD number>} }
+The naming convention is:
 
-%\red{N.B. This organization is not currently possible with the Job Harness system}
+%\red{{\bf rafts/<institution>/sraft<raft number>/<acquisition type>/<job ID>/s<CCD number>} }
+
+\red{{\bf RAFT/<raft ID>/<run ID>/<acquisition type>/<test version>/<job ID>/S<2-digit location in raft>}}
+
+The components of the path are described in Table~\ref{tab:dir}.  The run ID is assigned by the eTraveler system and is the same for all harnessed jobs run by any given traveler.  The job ID is assigned by the job harness system and is different for every harnessed job executed.  
 
 %\red{TBD: expand <test type> to list the acquisition and analysis directories actually used?  Possibly limit to just the acquisition directories - this document is not defining specs for the analysis results directory/file naming or formats}
 %\red{Are there other acquisition types to be listed?  The directories with analysis results, and the results files themselves provisionally are not included in this specification.}
@@ -143,14 +149,17 @@ The directory structure for raft-level measurements is designed to extend from m
 {\bf Quantity} & {\bf Description} \\
 \hline
 %{\bf rafts} & A designator to distinguish from {\bf CCDs} for single-sensor data sets \\
-{\bf <institution>} & {\bf bnl} or {\bf slac} \\
-{\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
+%{\bf <institution>} & {\bf bnl} or {\bf slac} \\
+%{\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
+{\bf <raft ID>} & Hardware ID of the raft \red{TBD format} \\
+{\bf <run ID>} & Run number assigned by the eTraveler \\
 {\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, ppump\_acq, qe\_acq, read\_noise, spot\_acq} \\
+{\bf <test version>} & Version designator (required by the Job Harness), typically `v0' \\
 {\bf <job ID>} & Job ID number assigned by the Job Harness \\
-{\bf <s\#\#>} & Location designator of the sensor in the raft (each \# = 0--2) \\
+{\bf <S\#\#>} & Location designator of the sensor in the raft (each \# = 0--2) \\
 \hline
 \end{tabular}
-\caption{Definitions of the components of the directory names for image data./label{tab:dir}}
+\caption{Definitions of the components of the directory names for image data.\label{tab:dir}}
 \end{centering}
 \end{table}
 
@@ -164,10 +173,10 @@ The directory structure for raft-level measurements is designed to extend from m
 The file names for a given sensor, test type, and processing step shall be of the form
 
 %<sensor id>_<test type>_<image type>_<seq. info>_<time stamp>.fits
-{\bf <CCD id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits }
+%{\bf <CCD id>\_<test type>\_<image type>\_<seq. info>\_<time stamp>.fits }
+{\bf <CCD id>\_<test type>\_<image type>\_<seq. info>\_<run ID>\_<time stamp>.fits }
 
-
-\red{TBD:  Include metrology files}
+%\red{TBD:  Include metrology files}
 
 \begin{table}
 \begin{centering}
@@ -180,6 +189,7 @@ The file names for a given sensor, test type, and processing step shall be of th
 {\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
 {\bf <image type>} & One of bias, dark, fe55, or flat \\
 {\bf <seq. info>} & Normally a 3-digit sequence number such as 000, 001, 002. \tablefootnote{Photon Transfer Curve data (pairs of flats) shall have exposure times and flat1/flat2 designators, e.g., 0010.0s\_flat1} \\
+{\bf <run ID>} & Run number assigned by the eTraveler \\
 {\bf <time stamp>} & A string of the form YYYYMMDDHHMMSS recording UTC of the start of the image acquisition\\
 \hline
 \end{tabular}

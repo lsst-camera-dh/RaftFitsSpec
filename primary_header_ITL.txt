@@ -3,6 +3,7 @@ BITPIX  =                    8 / bits per data value
 NAXIS   =                    0 / number of axes
 EXTEND  =                    T / Extensions are permitted
 ORIGIN  = '        '           / Which site acquired the data
+RUNNUM  = '12345   '           / Data taking run number
 DATE    = '2016-04-05T15:27:31.061' / Date that the file was written
 MJD     =   57483.644109502435 / Modified Julie Date that the file was written
 DATE-OBS= '2016-04-04T15:27:31.061' / Date of the observation (image acquisition
