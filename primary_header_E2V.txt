@@ -15,6 +15,7 @@ CONTROLL= 'REB     '           / Duplicates INSTRUME
 CONTNUM = '059888f2192d'       / CCD Controller Serial Number
 SEQFILE = '        '           / Name of sequencer file
 RAFTNAME= '        '           / Name of the RTM
+REBNAME = '        '           / Name of the REB
 CCD_MANU= '        '           / CCD Manufacturer: E2V or ITL
 CCD_TYPE= '        '           / CCD Model Number: CCD250 or 3800C
 CCD_SERN= '        '           / Manufacturers' CCD Serial Number
