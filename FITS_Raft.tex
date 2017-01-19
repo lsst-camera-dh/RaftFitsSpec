@@ -65,6 +65,8 @@
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
 
+\red{18 Jan 2017:  In directory path for example file name changed `/s12/' to `S12' for consistency with the specification of directory paths; added example hardware ID of the raft.  Added realistic raft ID and job ID to example path.}
+
 \red{13 Nov: Added REBNAME keyword to the primary headers, to include the name of the REB}
 
 \red{9 Nov: Added RAFTNAME keyword to the primary headers, to include the name of the RTM}
@@ -139,7 +141,7 @@ The naming convention is:
 
 %\red{{\bf rafts/<institution>/sraft<raft number>/<acquisition type>/<job ID>/s<CCD number>} }
 
-\red{{\bf RAFT/<raft ID>/<run ID>/<acquisition type>/<test version>/<job ID>/S<2-digit location in raft>}}
+\red{{\bf .../<raft ID>/<run ID>/<acquisition type>/<test version>/<job ID>/S<2-digit location in raft>}}
 
 The components of the path are described in Table~\ref{tab:dir}.  The run ID is assigned by the eTraveler system and is the same for all harnessed jobs run by any given traveler.  The job ID is assigned by the job harness system and is different for every harnessed job executed.  
 
@@ -157,7 +159,7 @@ The components of the path are described in Table~\ref{tab:dir}.  The run ID is 
 %{\bf rafts} & A designator to distinguish from {\bf CCDs} for single-sensor data sets \\
 %{\bf <institution>} & {\bf bnl} or {\bf slac} \\
 %{\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
-{\bf <raft ID>} & Hardware ID of the raft \red{TBD format} \\
+{\bf <raft ID>} & Hardware ID of the raft \red{e.g., LCA-10753\_RSA-003\_ETU1} \\
 {\bf <run ID>} & Run number assigned by the eTraveler \\
 {\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, ppump\_acq, qe\_acq, read\_noise, spot\_acq} \\
 {\bf <test version>} & Version designator (required by the Job Harness), typically `v0' \\
@@ -205,7 +207,7 @@ The file names for a given sensor, test type, and processing step shall be of th
 
 \red{An example with the desired directory path:}
 
-\red{{\tt rafts/bnl/sraft22/dark\_acq/361/s12/E2V-CCD250-088\_dark\_dark\_003\_20160121191343.fits}}
+\red{{\tt .../LCA-10753\_RSA-003\_ETU1/1234/dark\_acq/36123/S12/E2V-CCD250-088\_dark\_dark\_003\_20160121191343.fits}}
 
 
 \section{Internal File Organization}
