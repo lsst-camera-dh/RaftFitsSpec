@@ -65,6 +65,10 @@
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
 
+\red{27 Jan 2017:  No longer specifies the names of the acquisition jobs (which are part of the directory path), because nothing downstream depends on the particular naming convention.  Also, the allowed values of the FITS header keywords TESTTYPE and IMGTYPE are now listed explicitly, along with their mapping to the test type and image type designators in the file names (see the new Table 3).}
+
+\red{27 Jan 2017:  Clarified specifications of test type and image type in Table 2}
+
 \red{18 Jan 2017:  In directory path for example file name changed `/s12/' to `S12' for consistency with the specification of directory paths; added example hardware ID of the raft.  Added realistic raft ID and job ID to example path.}
 
 \red{13 Nov: Added REBNAME keyword to the primary headers, to include the name of the REB}
@@ -143,7 +147,7 @@ The naming convention is:
 
 \red{{\bf .../<raft ID>/<run ID>/<acquisition type>/<test version>/<job ID>/S<2-digit location in raft>}}
 
-The components of the path are described in Table~\ref{tab:dir}.  The run ID is assigned by the eTraveler system and is the same for all harnessed jobs run by any given traveler.  The job ID is assigned by the job harness system and is different for every harnessed job executed.  
+The components of the path are described in Table~\ref{tab:dir}; {\red {\bf <acquisition type> is not specified here; conventionally the name of the corresponding LCATR harnessed job is used.}  The run ID is assigned by the eTraveler system and is the same for all harnessed jobs run by any given traveler.  The job ID is assigned by the job harness system and is different for every harnessed job executed.  
 
 %\red{TBD: expand <test type> to list the acquisition and analysis directories actually used?  Possibly limit to just the acquisition directories - this document is not defining specs for the analysis results directory/file naming or formats}
 %\red{Are there other acquisition types to be listed?  The directories with analysis results, and the results files themselves provisionally are not included in this specification.}
@@ -161,7 +165,7 @@ The components of the path are described in Table~\ref{tab:dir}.  The run ID is 
 %{\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
 {\bf <raft ID>} & Hardware ID of the raft \red{e.g., LCA-10753\_RSA-003\_ETU1} \\
 {\bf <run ID>} & Run number assigned by the eTraveler \\
-{\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, ppump\_acq, qe\_acq, read\_noise, spot\_acq} \\
+%{\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, ppump\_acq, qe\_acq, read\_noise, spot\_acq} \\
 {\bf <test version>} & Version designator (required by the Job Harness), typically `v0' \\
 {\bf <job ID>} & Job ID number assigned by the Job Harness \\
 {\bf <S\#\#>} & Location designator of the sensor in the raft (each \# = 0--2) \\
@@ -194,8 +198,8 @@ The file names for a given sensor, test type, and processing step shall be of th
 \hline
 %{\bf <CCD id>} & {\bf s{\tt \#\#}}, where {\tt \#\#} are the coordinates of the CCD in the raft; each \# = 0--2, as defined in [2] \\
 {\bf <CCD id> } & {\bf LSST Serial Number, e.g. E2V-CCD250-\#\#\# or ITL-3800C-\#\#\#} \\
-{\bf <test type>} & {\bf dark, fe55, flat, lambda, spot} \\
-{\bf <image type>} & One of bias, dark, fe55, or flat \\
+{\bf <test type>} & {\bf dark, fe55, flat, lambda, sflat\_{\tt nnn} \tablefootnote{Superflat file with {\tt nnn} the wavelength in nm}, spot} \\
+{\bf <image type>} & One of bias, dark, fe55, or flat \tablefootnote{For test type {\tt lambda} the image type {\tt flat} is of the form {\tt flat}\_$\lambda\lambda\lambda\lambda$, where $\lambda\lambda\lambda\lambda$ is the wavelength in nm.}\\
 {\bf <seq. info>} & Normally a 3-digit sequence number such as 000, 001, 002. \tablefootnote{Photon Transfer Curve data (pairs of flats) shall have exposure times and flat1/flat2 designators, e.g., 0010.0s\_flat1} \\
 {\bf <run ID>} & Run number assigned by the eTraveler \\
 {\bf <time stamp>} & A string of the form YYYYMMDDHHMMSS recording UTC of the start of the image acquisition\\
@@ -220,12 +224,48 @@ The image files are multiple-extension FITS files with basic (not site-specific)
 
 The naming of the segments is defined in [2].  Each segment has a 2-digit designator, and these are incorporated in the {\tt EXTNAME} keyword strings as indicated in the example header below.
 
-The headers of the image extensions also define the pixel coordinate systems for the segments, sensors, and rafts.  These use a combination of NOAO Mosaic keyword conventions as in [1] and FITS World Coordinate System (WCS) definitions (ref).  The definitions specify which regions of the segments are pre-scan and over-scan regions.  (For TS8 a focal-plane level definition of the pixel coordinates is not needed.)
+The headers of the image extensions also define the pixel coordinate systems for the segments, sensors, and rafts.  These use a combination of NOAO Mosaic keyword conventions as in [1] and FITS World Coordinate System (WCS) definitions.  The definitions specify which regions of the segments are pre-scan and over-scan regions.  (For TS8 a focal-plane level definition of the pixel coordinates is not needed.)
 
 \section{Example Headers}
 
 \subsection{Primary Header}
-Tables \ref{tab:primary_E2V} and \ref{tab:primary_ITL}  have example primary headers of image files for E2V and ITL sensors. The primary header is not sensor-specific; separate examples are included because they have different, fixed values of the DETSIZE keyword.  It goes without saying that values of many of the other keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the formats.
+Tables \ref{tab:primary_E2V} and \ref{tab:primary_ITL}  have example primary headers of image files for E2V and ITL sensors. The primary header is not sensor-specific; separate examples are included because they have different, fixed values of the {\tt DETSIZE} keyword.  It goes without saying that values of many of the other keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the formats.
+
+The meanings of the keywords in the primary headers are described in the comments fields of the example headers in Tables \ref{tab:primary_E2V} and \ref{tab:primary_ITL}, and are intended to be the same as in the single sensor data sets for TS3.  In particular, the keywords {\tt TESTTYPE} and {\tt IMGTYPE} have the same allowed values as used for single sensor tests with TS3.
+
+Table \ref{tab:keywords} shows the relation between the test type and image type designators in the file names and the primary headers in the FITS files.  The table includes entries for tests (like cross talk) that will not be routinely made during RTM qualificaton; they are included here for completeness, and future reference.
+
+%TESTTYPE:  Allowed values:  DARK, FE55, FLAT, LAMBDA, PERSISTENCE, SPOT, SFLAT\_nnn [where nnn is the wavelength in nm], TRAP.  These correspond to the allowed values of <test type> in the file names and directory paths 
+%PERSISTENCE (BIAS, BIAS, FLAT)
+
+\begin{table}
+\begin{centering}
+\begin{tabular}{| l | l | l | l |}
+\hline
+{\bf <test type>} & {\bf <image type>} & {\bf TESTTYPE} &  {\bf IMGTYPE} \\
+\hline
+crosstalk & bias & {\tt SPOT} & {\tt BIAS} \\
+crosstalk & flat & {\tt SPOT} & {\tt FLAT} \\
+crosstalk & spot & {\tt SPOT} & {\tt SPOT} \\
+dark & bias & {\tt DARK}  & {\tt BIAS} \\
+dark & dark & {\tt DARK} & {\tt DARK} \\
+fe55 & bias & {\tt FE55} & {\tt BIAS} \\
+fe55 & fe55 & {\tt FE55} & {\tt FE55} \\
+flat & <time>\_flat1 \tablefootnote{<time> is a time in seconds, e.g., 0010.0s}  & {\tt FLAT} & {\tt FLAT} \\
+flat & <time>\_flat2 & {\tt FLAT} & {\tt FLAT} \\
+flat & bias\_\#\#\# &  {\tt FLAT} & {\tt BIAS} \\
+persistence & bias & {\tt PERSISTENCE} & {\tt BIAS} \\
+persistence & dark & {\tt PERSISTENCE} & {\tt DARK} \\
+trap & bias & {\tt TRAP} & {\tt BIAS} \\
+trap &  ppump & {\tt TRAP} & {\tt PPUMP} \\
+lambda & bias\_\#\#\# \tablefootnote{\#\#\# is a sequence number, zero padded.} & {\tt LAMBDA} & {\tt BIAS} \\
+lambda & flat\_$\lambda\lambda\lambda\lambda$\_\#\#\# \tablefootnote{$\lambda\lambda\lambda\lambda$ is the wavelength in nm and \#\#\# is a sequence number, zero padded.} & {\tt LAMBDA} & {\tt FLAT} \\
+sflat\_\#\#\# & flat\_?\#\#\# \tablefootnote{? is either L or H; \#\#\# is a seqence number, zero padded} & {\tt SFLAT\_\#\#\#} & {\tt FLAT} \\
+\hline
+\end{tabular}
+\caption{Correspondence between test type and image type designators in the file names and primary header keywords.\label{tab:keywords}}
+\end{centering}
+\end{table}
 
 %\red{
 %Points for discussion:
