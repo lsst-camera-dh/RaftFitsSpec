@@ -33,7 +33,6 @@
 \usepackage{tablefootnote}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
-\usepackage{longtable}
 \pagestyle{fancy}
 
 \fancyhead{}
@@ -64,6 +63,8 @@
 
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
+
+\red{2 Mar 2017:   Updated primary headers to match current usage, including CCDBSS keyword.  Also added an example REB Conditions header.  The example headers are long enough now to be better off in subsections of their own at the end of the document.  As before, they are also available as ASCII in the Github repository.}
 
 \red{27 Jan 2017:  No longer specifies the names of the acquisition jobs (which are part of the directory path), because nothing downstream depends on the particular naming convention.  Also, the allowed values of the FITS header keywords TESTTYPE and IMGTYPE are now listed explicitly, along with their mapping to the test type and image type designators in the file names (see the new Table 3).}
 
@@ -229,9 +230,9 @@ The headers of the image extensions also define the pixel coordinate systems for
 \section{Example Headers}
 
 \subsection{Primary Header}
-Tables \ref{tab:primary_E2V} and \ref{tab:primary_ITL}  have example primary headers of image files for E2V and ITL sensors. The primary header is not sensor-specific; separate examples are included because they have different, fixed values of the {\tt DETSIZE} keyword.  It goes without saying that values of many of the other keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the formats.
+Sections \ref{sec:primary_E2V} and \ref{sec:primary_ITL}  have example primary headers of image files for E2V and ITL sensors. The primary header is not sensor-specific; separate examples are included because they have different, fixed values of the {\tt DETSIZE} keyword.  It goes without saying that values of many of the other keywords in actual data files will be different.  Keyword values are shown here and in the other example headers as a guide to the formats.
 
-The meanings of the keywords in the primary headers are described in the comments fields of the example headers in Tables \ref{tab:primary_E2V} and \ref{tab:primary_ITL}, and are intended to be the same as in the single sensor data sets for TS3.  In particular, the keywords {\tt TESTTYPE} and {\tt IMGTYPE} have the same allowed values as used for single sensor tests with TS3.
+The meanings of the keywords in the primary headers are described in the comments fields of the example headers in \S \ref{sec:primary_E2V} and \ref{sec:primary_ITL}, and are intended to be the same as in the single sensor data sets for TS3.  In particular, the keywords {\tt TESTTYPE} and {\tt IMGTYPE} have the same allowed values as used for single sensor tests with TS3.
 
 Table \ref{tab:keywords} shows the relation between the test type and image type designators in the file names and the primary headers in the FITS files.  The table includes entries for tests (like cross talk) that will not be routinely made during RTM qualificaton; they are included here for completeness, and future reference.
 
@@ -279,22 +280,8 @@ sflat\_\#\#\# & flat\_?\#\#\# \tablefootnote{? is either L or H; \#\#\# is a seq
 %\end{itemize}
 %}
 
-\begin{table}
-\begin{alltt}
-\input{primary_header_E2V.txt}
-\end{alltt}
-\caption{Example primary header for an E2V sensor image file.\label{tab:primary_E2V}}
-\end{table}
-
-\begin{table}
-\begin{alltt}
-\input{primary_header_ITL.txt}
-\end{alltt}
-\caption{Example primary header for an ITL sensor image file.\label{tab:primary_ITL}}
-\end{table}
-
 \subsection{Image Extension Header (ITL)}
-This example is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~\ref{sec:pixelcoords}.
+The example in Table \ref{tab:image_ITL} is the first image extension of an image file for an ITL sensor.  The other 15 extensions are of course similar but differ in the keywords specifying the mapping of amplifier (segment) coordinates to coordinates within a sensor, raft, or focal plane.  The calculation of these keyword values is provided in \S~\ref{sec:pixelcoords}.
 %\ref{sec:coords_itl}.
 
 \begin{table}
@@ -307,7 +294,7 @@ This example is the first image extension of an image file for an ITL sensor.  T
 
 \subsection{Image Extension Header (e2V)}
 
-This is an example of an image extension for an e2V sensor.  It is the first segment (Segment10) in the file.
+The example in Table \ref{Tab:image_e2V} is an image extension for an e2V sensor.  It is the first segment (Segment10) in the file.
 
 \begin{table}
 \tiny
@@ -317,16 +304,28 @@ This is an example of an image extension for an e2V sensor.  It is the first seg
 \caption{Example header of an image extension for an e2V sensor.\label{tab:image_e2V}}
 \end{table}
 
+\subsection{CCD Conditions Header}
+
+\red{
+\begin{itemize}
+\item{The CCD\_COND headers are just placeholders in recent single sensor image files.  Are they needed?  In LCA-10140 they contained keywords defining currents and voltages for the segments.  These probably were controller settings rather than read-out values.}
+\end{itemize}
+}
+
 \subsection{Test Conditions Header}
 
 \red{
 \begin{itemize}
-\item{Will REB-related keywords be in this extension or in an extension of their own?}
 \item{What are the allowed values of the FILTER keyword?}
 \item{LCA-10140 has the MONOWL keyword (Monochromator wavelength setting), but it is not in the example header}
 \item{LCA-10140 has PD\_SER (Monitor Photodiode serial number), but this keyword is not in the example header.}
 \end{itemize}
 }
+
+\subsection{REB Conditions Header}
+
+The contents of this extension header are defined by example in \S \ref{sec:reb_cond_head}.
+
 
 \subsection{Photodiode Readings Header}
 
@@ -342,14 +341,6 @@ This is an example of an image extension for an e2V sensor.  It is the first seg
 \end{alltt}
 \caption{Example Test Conditions extension header.\label{table:test_cond}}
 \end{table}
-
-\subsection{CCD Conditions Header}
-
-\red{
-\begin{itemize}
-\item{The CCD\_COND headers are just placeholders in recent single sensor image files.  Are they needed?  In LCA-10140 they contained keywords defining currents and voltages for the segments.  These probably were controller settings rather than read-out values.}
-\end{itemize}
-}
 
 \begin{table}
 \begin{alltt}
@@ -826,6 +817,33 @@ Table~\ref{tab:detsize} provides the values of the {\tt DETSIZE} and {\tt DATASE
 %    DETSEC = '[(Sy + 1)*dimh:Sy*dimh + 1, 2*dimv:dimv + 1]'
 %else
 %    DETSEC = '[(Sy + 1)*dimh : Sy*dimh +1, 1: dimv]'
-    
-\end{document}
 
+\section{Appendix:  Long Example Headers}
+
+\subsection{E2V Primary Header\label{sec:primary_E2V}}
+%\begin{table}
+\begin{alltt}
+\input{primary_header_E2V.txt}
+\end{alltt}
+%\caption{Example primary header for an E2V sensor image file.\label{tab:primary_E2V}}
+%\end{table}
+
+\subsection{ITL Primary Header\label{sec:primary_ITL}}
+%\begin{table}
+\begin{alltt}
+\input{primary_header_ITL.txt}
+\end{alltt}
+%\caption{Example primary header for an ITL sensor image file.\label{tab:primary_ITL}}
+%\end{table}
+
+\subsection{REB Conditions Header\label{sec:reb_cond_head}}
+
+%\begin{table}
+\tiny
+\begin{alltt}
+\input{reb_cond_header.txt}
+\end{alltt}
+%\caption{Example header of an image extension for an e2V sensor.\label{tab:reb_cond}}
+%\end{table}
+
+\end{document}
