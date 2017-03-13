@@ -64,7 +64,7 @@
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
 
-\red{13 Mar 2017:  Corrected example directory path and file name in Sec. 6.2 to include test version in the path and run ID in the file name.}
+\red{13 Mar 2017:  Corrected example directory path and file name in Sec. 6.2 to include test version in the path and run ID in the file name.  Clarified definitions of job ID, run ID, and sequence number.}
 
 \red{2 Mar 2017:   Updated primary headers to match current usage, including CCDBSS keyword.  Also added an example REB Conditions header.  The example headers are long enough now to be better off in subsections of their own at the end of the document.  As before, they are also available as ASCII in the Github repository.}
 
@@ -216,7 +216,7 @@ The file names for a given sensor, test type, and processing step shall be of th
 
 \red{{\tt .../LCA-10753\_RSA-003\_ETU1/1234/dark\_acq/v0/36123/S12/ \\ E2V-CCD250-088\_dark\_dark\_003\_1234\_20160121191343.fits}}
 
-\red{Here the sequence number is 003, the run ID is 1234, and the time stamp is 20160121191343.  Please do not assume that the job ID (36123 here) is limited to 5 digits, or that the run ID (1234 here) is limited to four.  The sequence number is specified to be three digits, and is not expected to exceed 999.}
+\red{Here the sequence number is 003, the run ID is 1234, and the time stamp is 20160121191343.  Please do not assume that the job ID (36123 here) is limited to 5 digits, or that the run ID (1234 here) is limited to four.  In addition, for data taken with `development' versions of harnessed jobs, the run ID will have a `D' appended (e.g., `1234D').  The sequence number is specified to be three digits, and is not expected to exceed 999.}
 
 \section{Internal File Organization}
 
