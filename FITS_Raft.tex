@@ -417,6 +417,7 @@ CCD physical size & 4197 $\times$ 4200 & 4198 $\times$ 4198 & ccdpx $\times $ cc
 Inter-CCD gaps & 28 $\times$ 25 & 27 $\times$ 27 & gap\_inx $\times$ gap\_iny \\
 Pitch of rafts & 12700 $\times$ 12700 & 12700 $\times$ 12700 & raftx $\times$ rafty \\
 Gaps at edges of rafts & 26.5 $\times$ 25 & 26 $\times$ 26 & gap\_outx $\times$ gap\_outy \\
+
 \hline
 \end{tabular}
 \caption{CCD and raft-related dimensional quantities for the pixel coordinate systems, from [3].  The physical dimensions have been converted to pixels for the nominal 10~$\mu$m $\times$ 10~$\mu$m pixel size.\label{tab:dims}}
@@ -548,7 +549,7 @@ Section~\ref{sec:wcscoords} presents the WCS keyword values in terms of $S$, $C$
 
 {\bf N.B.:} The segment coordinate $x_s$ defined above {\bf does not include} pre-scan pixels.  The WCS coordinate transformations are applied (e.g., by {\it ds9}) using pixel coordinates for the entire stored image arrays.  Because the Camera coordinate system is rotated by 90$^\circ$ from the CCD system, accounting for the horizontal pre-scan in the WCS projections means adjusting the {\tt CRVAL2} keyword values.  These offsets are included in the expressions in Section~\ref{sec:wcscoords}.  You will notice that for e2V CCDs the sign of the offset depends on the value of $S_x$.
 
-{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to be apply the trimming before mapping the segments together\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  In addition {\it ds9} will not rotate the image segments by 90$^\circ$ when assembling a mosaic, as would need to do in order to display images in which the x axis of the Camera coordinate system is horizontal.  Even if you ask it to mosaic a CCD image in WCS c coordinates, {\it ds9} will use the Mosaic keywords to assemble the image (with the parallel readout direction vertical).  It will also calculate WCS c pixel coordinates for you but these will not make much sense because it has not actually assembled the image with the orientation specified in the WCS coordinates.}.
+{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The e2V and ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to apply the trimming before mapping the segments together\footnote{For example, {\it ds9} {\bf cannot} trim images when assembling them with WCS keywords, even if NRAO Mosaic keywords specifying pre-scan and over-scan regions are present.  In addition {\it ds9} will not rotate the image segments by 90$^\circ$ when assembling a mosaic, as would need to do in order to display images in which the x axis of the Camera coordinate system is horizontal.  Even if you ask it to mosaic a CCD image in WCS c coordinates, {\it ds9} will use the Mosaic keywords to assemble the image (with the parallel readout direction vertical).  It will also calculate WCS c pixel coordinates for you but these will not make much sense because it has not actually assembled the image with the orientation specified in the WCS coordinates.}.
 
 \subsection{Summary of Coordinate Systems}
 Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  Note that because the pitch of the rafts does not depend on the type of CCD, the coordinate {\bf specifications defined here will work for a hybrid focal plane} containing a combination of e2V-only and ITL-only rafts.  The focal plane coordinate ranges are listed separately for the x and y directions; keep in mind that not all combinations of x and y values in those ranges lie within a raft.  Also shown are the serial/parallel coordinates for CCDs and rafts; as described above, these are rotated with respect to the Camera coordinate system.
@@ -741,6 +742,7 @@ Segment pixels (vertical $\times$ horizontal) & 2002 $\times$ 512 & $2000 \times
 Pre-scan pixels & 10 & 3 & preh \\
 Over-scan pixels & 22 & 32 & overh \\
 Vertical over-scan pixels & 46 & 48 & overv \\
+
 \hline
 \end{tabular}
 \caption{CCD-related parameters for defining NOAO Mosaic keywords for assembling single-CCD images\label{tab:mosaic}}
@@ -851,7 +853,7 @@ The relevant quantities for defining the pixel coordinate systems for the corner
 \hline
 Segment pixels & $2000 \times 509$ (vertical $\times$ horizontal) & dimv $\times$ dimh \\
 Active area  (x $\times$ y) \tablefootnote{Note that the dimensions are specified here in terms of the orientation of Gdr2 in corner raft R44} & 4000 $\times$ 4072  & ccdax $\times$ ccday \\
-CCD physical size & 4198 $\times$ 4198 & ccdpx $\times $ ccdpy \\
+CCD physical size & 4198 $\times$ 4198 & ccdpx $\times$ ccdpy \\
 x-offset 1 & 249 & xoff1 \\
 x-offset 2 & 138 & xoff2 \\
 y-offset 1 & 151 & yoff1 \\
@@ -860,7 +862,7 @@ Gdr overhang & 100 & overh \\
 Corner raft dimension & 11630 & crdim \\
 \hline
 \end{tabular}
-\caption{CCD and raft-related dimensional quantities for the pixel coordinate systems, from [3].  The physical dimensions have been converted to pixels for the nominal 10~$\mu$m $\times$ 10~$\mu$m pixel size.  See Fig.~\ref{fig:CRlayout} for descriptions of the offset and overhang quantitites. \label{tab:cr_dims}}
+\caption{CCD and raft-related dimensional quantities for the pixel coordinate systems, from [3].  The physical dimensions have been converted to pixels for the nominal 10~$\mu$m $\times$ 10~$\mu$m pixel size.  See Fig.~\ref{fig:CRlayout} for descriptions of the offset and overhang quantities. \label{tab:cr_dims}}
 \end{centering}
 \end{table}
 
@@ -883,36 +885,36 @@ Corner raft dimension & 11630 & crdim \\
 
 As noted in [3], the bays for the corner rafts are R00, R04, R40, and R44.  Each of these is rotated with respect to the others, by multiples of 90 deg.  For convenience below the transformation between CCD (WFS or Gdr) coordinates and the corner raft is developed first for R44 and then rotations are applied.
 
-Let $(x_s, y_s)$ denote pixel coordinates in a given segment $S$, as read out, so that $x_s$ is in the serial direction and $y_s$ is in the parallel direction, and consider them to be in as-read-out order, without transpositions to account for the locations of the output nodes.  For the WFS Low and WFS High, we denote the segment as S0, S1, ... S7.  In output FITS files, 
+Let $(x_s, y_s)$ denote pixel coordinates in a given segment $S$, as read out, so that $x_s$ is in the serial direction and $y_s$ is in the parallel direction, and consider them to be in as-read-out order, without transpositions to account for the locations of the output nodes.  For WFS Low and WFS High, we denote the segment as S0, S1, ... S7.  
 
 Here are the relations between $x_s$, $y_s$ and physical coordinates $x_c, y_c$ within the CCD (WFS or Gdr) and coordinates within the R44 reference corner raft $x_0, y_0$.
 
 Gdr1:
 \begin{equation}
-x_c = (7 - S_y) \times {\rm dimh} + 1 + x_s
+x_c = (7 - S_y) \times {\rm dimh} + 1 + {\rm dimh} - x_s
 \end{equation}
 \begin{equation}
-y_c = {\rm dimv} \times S_x + 1 + y_s
+y_c = (1 - S_x) ( y_s + 1) +  S_x ( {\rm dimv} - y_s) {\rm dimv}
 \end{equation}
 \begin{equation}
-x_0 = {\rm overh} + {\rm ccdpx} + {\rm xoff1} + {\rm xoff2} + x_c
+x_0 = {\rm overh} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} + x_c
 \end{equation}
 \begin{equation}
-y_0 = y_c
+y_0 = ({\rm ccdpy} - {\rm ccday})/2 + y_c
 \end{equation}
 
 Gdr2:
 \begin{equation}
-x_c = x_s
+x_c =  S_x \times y_s + 1 + (1 - S_x)({\rm dimv} - y_s)
 \end{equation}
 \begin{equation}
-y_c = y_s
+y_c = S_y \times {\rm dimh} + 1  + x_s
 \end{equation}
 \begin{equation}
-x_0 = xc
+x_0 = xc + (ccday - ccdpy)/2
 \end{equation}
 \begin{equation}
-y_0 = {\rm over} + {\rm ccdpy} + {\rm yoff1} + {\rm yoff2} + y_c
+y_0 = {\rm over} + {\rm ccdax} + ({\rm ccday} - {\rm ccdpy})/2 + {\rm yoff1} + {\rm yoff2} + y_c
 \end{equation}
 
 WFS Low:
@@ -920,27 +922,27 @@ WFS Low:
 x_c = {\rm dimv} + 1 - y_s
 \end{equation}
 \begin{equation}
-y_c = (7 - S_n) \times {\rm dimh} + x_c
+y_c = (7 - S_n) \times {\rm dimh} + 1+ x_s
 \end{equation}
 \begin{equation}
-x_0 = {\rm over} + x_c 
+x_0 = {\rm over} + ({\rm ccdax} - {\rm ccdpx})/2 + x_c 
 \end{equation}
 \begin{equation}
-y_0 = y_c + {\rm yoff1}
+y_0 = ({\rm ccday} - {\rm ccdpy})/2 + {\rm yoff1} + y_c
 \end{equation}
 
 WFS High:
 \begin{equation}
-x_c = y_s
+x_c = y_s + 1
 \end{equation}
 \begin{equation}
-y_c = S_n \times {\rm dimh} + x_c
+y_c = (S_n  + 1) \times {\rm dimh} + 1 - x_s
 \end{equation}
 \begin{equation}
-x_0 = {\rm overh} + {\rm ccdpx}/2 + {\rm xoff1} + x_c
+x_0 = {\rm overh} + {\rm ccdax}/2 + {\rm ccdpx}/2 + {\rm xoff1} + x_c
 \end{equation}
 \begin{equation}
-y_0 = y_c + {\rm yoff1}
+y_0 = ({\rm ccday} - {\rm ccdpy})/2 + {\rm yoff1} + y_c
 \end{equation}
 
 The mapping between $x_0, y_0$ and $x_r, y_r$ is different for each corner raft.
@@ -977,7 +979,7 @@ x_r = x_0
 y_r = y_0
 \end{equation}
 
-The corresponding coordinates in the focal plane are 
+The corresponding coordinates in the focal plane are (TBC)
 
 \begin{equation}
 x_f = x_r + R_x \times {\rm raftx}
@@ -986,7 +988,7 @@ x_f = x_r + R_x \times {\rm raftx}
 y_f = y_r + R_y \times {\rm rafty}
 \end{equation}
 
-For the science rafts we defined serial/parallel coordinate systems (to have the x-axis parallel to the serial directions of the sensor readouts and the y-axis in the parallel transfer direction) for displaying assembled images with the segments shown in a conventional orientation.  The concept of serial/parallel coordinates does not make as much sense for corner rafts, because each raft has CCDs oriented with 90 deg rotations from each other, but we can define the system at the raft level for potential reference.  The serial/parallel coordinate system is rotated by 90$^\circ$ {\bf clockwise} from the orientation shown in Figure ~\ref{fig:CRlayout}.
+For the science rafts we defined serial/parallel coordinate systems (to have the x-axis parallel to the serial directions of the sensor readouts and the y-axis in the parallel transfer direction) for displaying assembled images with the segments shown in a conventional orientation.  The concept of serial/parallel coordinates does not make as much sense for corner rafts, because each raft has CCDs oriented with 90 deg rotations with respect to each other, but we can define the system at the raft level for potential reference.  The serial/parallel coordinate system is rotated by 90$^\circ$ {\bf clockwise} from the orientation shown in Figure ~\ref{fig:CRlayout}.
 
 R00:
 \begin{equation}
@@ -1021,7 +1023,7 @@ p_r = x_r
 \end{equation}
 
 \subsection{World Coordinate System FITS Keywords}
-The FITS World Coordinate System (WCS; see Sec. 8 of [4]) keyword specification allows multiple coordinate systems to be defined for the same image.  Each coordinate system is designated by a single letter; the letter is appended to the corresponding header keywords that define the transformation.  We take advantage of that multiple coordinate system capability here to define coordinate systems for individual segments ({\tt A} for Amplifier\footnote{The NOAO MOSAIC header keyword convention, which is an earlier approach to defining keywords for mapping multi-sensor images together, used the term Amplifier to refer to individual image segments, i.e., portions read out through one amplifier node.  This is the motivation for adopting {\tt A} here.}), CCDs ({\tt C}), Rafts ({\tt R}), and the entire focal plane ({\tt F}). We also define a serial/parallel coordinate system, rotated 90$^\circ$ clockwise with respect to the Camera coordinate system, for corner rafts.  This is designated  {\tt Q}, i.e., one letter before {\tt R}.  (The WSC standard allows only single-letter designations for coordinate mappings.)
+...
 
 The header keywords define the origin and any rotation/transposition of the two-dimensional coordinate systems.   No scaling is required -- the coordinate systems are all defined in terms of pixels.  At the amplifier level, the transformations needed rotate the segments by 90$^\circ$ and, depending on the location of the readout node, reverse the segment image in x and/or y.  After these transformations, no further rotations are needed and relative to the transformations for {\tt A}, the transformations to {\tt C}, {\tt R}, and {\tt F} coordinate systems involve only shifts of the coordinate origin.
 
@@ -1041,14 +1043,14 @@ The transformation equations defining ($x_c, y_c$), ($x_r, y_r$), and ($x_f, y_f
 
 Because the transformation matrix does not change the pixel scale, the {\tt CDELT} values are always 1, and the {\tt PC} values are always $\pm1$ or 0, representing only transpositions or inversions.  For these transformations the offsets are always in units of pixels.  For convenience all {\tt CRPIX} values will be defined as 0.  The offsets are then determined only by the {\tt CRVAL} keyword values.
 
-Section~\ref{sec:cr_wcscoords} presents the WCS keyword values in terms of $S$, $C$, $R$ and the dimensional quantities of Table~\ref{tab:dims}, for ITL sensors and Table~\ref{tab:cr_dims}.  
+Section~\ref{sec:cr_wcscoords} presents the WCS keyword values in terms of $S$, $C$, $R$ and the dimensional quantities of Table~\ref{tab:dims} (for ITL sensors) and Table~\ref{tab:cr_dims}.
 
 {\bf N.B.:} The segment coordinate $x_s$ defined above {\bf does not include} pre-scan pixels.  The WCS coordinate transformations are applied (e.g., by {\it ds9}) using pixel coordinates for the entire stored image arrays.  Because the Camera coordinate system is rotated by 90$^\circ$ from the CCD system, accounting for the horizontal pre-scan in the WCS projections means adjusting the {\tt CRVAL2} keyword values.  These offsets are included in the expressions in Section~\ref{sec:cr_wcscoords}.  
 
-{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to be apply the trimming before mapping the segments together.
+{\bf N.B.:}  The WCS keywords define a mapping for every pixel in the image to which they belong.  That is, WCS keywords as defined in this section cannot by themselves be used to assemble mosaics from images that include pre-scan or over-scan regions.  The ITL images will include such regions, of course.  For a mosaic to be successfully assembled from the WCS keywords, the FITS image viewer needs to apply the trimming before mapping the segments together.
 
-\subsection{Summary of Coordinate Systems}
-Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  Note that because the pitch of the rafts does not depend on the type of CCD, the coordinate {\bf specifications defined here will work for a hybrid focal plane} containing a combination of e2V-only and ITL-only rafts.  The focal plane coordinate ranges are listed separately for the x and y directions; keep in mind that not all combinations of x and y values in those ranges lie within a raft.  Also shown are the serial/parallel coordinates for CCDs and rafts; as described above, these are rotated with respect to the Camera coordinate system.
+\subsection{Summary of Corner Raft Coordinate Systems\label{sec:cr_wcscoords}}
+Table~\ref{tab:cr_coords} summarizes the ranges of the coordinate systems presented here.  The listed ranges correspond to active areas only, i.e., regions with CCD pixels.  The Amplifier coordinate system is rotated 90$^\circ$ from the Segment coordinate system.  The raft and focal plane coordinate ranges do not start at 1 because the origin of the raft system, the lower-right corner of a raft, is not an active area.  The focal plane coordinate ranges are listed separately for the x and y directions; keep in mind that not all combinations of x and y values in those ranges lie within a raft.  Also shown are the serial/parallel coordinates for corner rafts; as described above, these are rotated with respect to the Camera coordinate system.
 
 \subsection{Evaluation of WCS Coordinate Keyword Values\label{sec:wcscoords}}
 
@@ -1059,8 +1061,8 @@ Table~\ref{tab:coords} summarizes the ranges of the coordinate systems presented
 {\bf Coordinates} & {\bf Description} & {\bf Range (ITL)}  \\
 \hline
 $x_s, y_s$ & Segment, in as-read-out order &  1--509, 1--2000  \\
-$x_A, y_A$ & Amplifier, in as-seen-from-L3 order & 1--2000, 1--509 \\
-$x_c, y_c$ & CCD &  1--4000, 1--4072  \\
+$x_A, y_A$ & Amplifier, in as-seen-from-L3 order & 1--2000, 1--509 or 1--509, 1--2000 \\
+$x_c, y_c$ & CCD, in as-seen-from-L3 order &  1--4000, 1--4072  \\
 $x_r, y_r$ & Corner raft &  126--12575, 90--12611 \\
 $s_c, p_c$ & CCD (serial/parallel) & 1--4072, 1--4000 \\
 $s_r, p_r$ & Corner raft (serial/parallel) & 90--12611, 126--12575 \\
@@ -1070,73 +1072,74 @@ $s_r, p_r$ & Corner raft (serial/parallel) & 90--12611, 126--12575 \\
 \end{centering}
 \end{table}
 
+%In R40, Gdr1 is aligned as for the ITL sensors in the science rafts
+%In R44, Gdr2 is aligned as for the ITL sensors in the science rafts
 
-The following equations define the WCS coordinate keyword values for corner raft ITL sensors:
+The following equations define the WCS coordinate keyword values for the {\bf Gdr1} sensor in corner raft {\bf R44}:
 %\begin{table}
 \begin{align*}
-& {\tt PC1\_1A} = 0 \\
-& {\tt PC1\_2A} = 1 - 2 \times S_x \\
-& {\tt PC2\_1A} = -1 \\
-& {\tt PC2\_2A} = 0 \\
+& {\tt PC1\_1A} = 1 \\
+& {\tt PC1\_2A} = 0 \\
+& {\tt PC2\_1A} = S_x \times ({\rm dimv} + 1) \\
+& {\tt PC2\_2A} = 1 - 2 \times S_x \\
 & {\tt CDELT1A} = 1 \\
 & {\tt CDELT2A} = 1 \\
 & {\tt CRPIX1A} = 0 \\
 & {\tt CRPIX2A} = 0 \\
-& {\tt CRVAL1A} = S_x \times({\rm dimv} + 1) \\
-& {\tt CRVAL2A} = {\rm dimh} + 1 - {\rm preh} \\
-& {\tt PC1\_1C} = 0 \\
-& {\tt PC1\_2C} = 1 - 2 \times S_x \\
-& {\tt PC2\_1C} = -1 \\
-& {\tt PC2\_2C} = 0 \\
+& {\tt CRVAL1A} =  1 - {\rm preh} \\
+& {\tt CRVAL2A} = 2 \times S_y \times {\rm dimh} + 1 - {\rm preh} \\
+& {\tt PC1\_1C} = 1 \\
+& {\tt PC1\_2C} = 0 \\
+& {\tt PC2\_1C} = S_x \times ({\rm dimv} + 1) \\
+& {\tt PC2\_2C} = 1 - 2 \times S_x \\
 & {\tt CDELT1C} = 1 \\
 & {\tt CDELT2C} = 1 \\
 & {\tt CRPIX1C} = 0 \\
 & {\tt CRPIX2C} = 0 \\
-& {\tt CRVAL1C} = S_x \times(2 \times {\rm dimv} + 1) \\
-& {\tt CRVAL2C} = {\rm dimh} + 1 + S_y \times {\rm dimh} - {\rm preh} \\
-& {\tt PC1\_1R} = 0 \\
-& {\tt PC1\_2R} = 1 - 2 \times S_x \\
-& {\tt PC2\_1R} = -1 \\
-& {\tt PC2\_2R} = 0 \\
+& {\tt CRVAL1C} = 1 - {\rm preh} + (7-S_y) \times {\rm dimh} \\
+& {\tt CRVAL2C} = 2 \times S_y \times {\rm dimh} + 1 - {\rm preh} + S_x \times {\rm dimv} \\ 
+& {\tt PC1\_1R} = 1 \\
+& {\tt PC1\_2R} = 0 \\
+& {\tt PC2\_1R} = S_x \times ({\rm dimv} + 1) \\
+& {\tt PC2\_2R} = 1 - 2 \times S_x \\
 & {\tt CDELT1R} = 1 \\
 & {\tt CDELT2R} = 1 \\
 & {\tt CRPIX1R} = 0 \\
 & {\tt CRPIX2R} = 0 \\
-& {\tt CRVAL1R} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
-& {\tt CRVAL2R} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) - {\rm preh} \\
-& {\tt PC1\_1F} = 0 \\
-& {\tt PC1\_2F} = 1 - 2 \times S_x \\
-& {\tt PC2\_1F} = -1 \\
-& {\tt PC2\_2F} = 0 \\
+& {\tt CRVAL1R} = 1 - {\rm preh} + (7-S_y) \times {\rm dimh} + {\rm overh} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} \\  
+& {\tt CRVAL2R} = 2 \times S_y \times {\rm dimh} + 1 - {\rm preh} + S_x \times {\rm dimv} + ({\rm ccdpy} - {\rm ccday})/2 \\ 
+& {\tt PC1\_1F} = 1 \\
+& {\tt PC1\_2F} = 0 \\
+& {\tt PC2\_1F} = S_x \times ({\rm dimv} + 1) \\
+& {\tt PC2\_2F} = 1 - 2 \times S_x \\
 & {\tt CDELT1F} = 1 \\
 & {\tt CDELT2F} = 1 \\
 & {\tt CRPIX1F} = 0 \\
 & {\tt CRPIX2F} = 0 \\
-& {\tt CRVAL1F} = S_x \times(2 \times {\rm dimv} + 1) + {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_x \times (2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) + R_x \times {\rm raftx} \\
-& {\tt CRVAL2F} = {\rm dimh} + 1 + S_y \times {\rm dimh} + {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 +  C_y \times ( 8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + \\  &\qquad {} R_y \times {\rm rafty} - {\rm preh} \\
-& {\tt PC1\_1B} = -1   \\
-& {\tt PC1\_2B} = 0 \\
-& {\tt PC2\_1B} = 0 \\
-& {\tt PC2\_2B} = 1 - 2 \times S_p \\
+& {\tt CRVAL1F} = 1 - {\rm preh} + (7-S_y) \times {\rm dimh} + {\rm overh} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} + R_x \times {\rm raftx} \\ 
+& {\tt CRVAL2F} = 2 \times S_y \times {\rm dimh} + 1 - {\rm preh} + S_x \times {\rm dimv} + ({\rm ccdpy} - {\rm ccday})/2 R_x \times {\rm rafty} \\  
+& {\tt PC1\_1B} = 0   \\
+& {\tt PC1\_2B} = 1 \\
+& {\tt PC2\_1B} = 1 \\
+& {\tt PC2\_2B} = 0 \\
 & {\tt CDELT1B} = 1 \\
 & {\tt CDELT2B} = 1 \\
 & {\tt CRPIX1B} = 0 \\
 & {\tt CRPIX2B} = 0 \\
-& {\tt CRVAL1B} = (S_s + 1) \times {\rm dimh} + 1 - {\rm preh} \\
-& {\tt CRVAL2B} = S_p \times (2 \times {\rm dimv} + 1)  \\
-& {\tt PC1\_1Q} = -1   \\
-& {\tt PC1\_2Q} = 0 \\
-& {\tt PC2\_1Q} = 0 \\
-& {\tt PC2\_2Q} = 1 - 2 \times S_p  \\
+& {\tt CRVAL1B} = TBD \\ %(S_s + 1) \times {\rm dimh} + 1 - {\rm preh} \\
+& {\tt CRVAL2B} = TBD \\ %S_p \times (2 \times {\rm dimv} + 1)  \\
+& {\tt PC1\_1Q} = 0   \\
+& {\tt PC1\_2Q} = 1 \\
+& {\tt PC2\_1Q} = 1 \\
+& {\tt PC2\_2Q} = 0  \\
 & {\tt CDELT1Q} = 1 \\
 & {\tt CDELT2Q} = 1 \\
 & {\tt CRPIX1Q} = 0 \\
 & {\tt CRPIX2Q} = 0 \\
-& {\tt CRVAL1Q} = {\rm gap\_outy} + ({\rm ccdpy} - {\rm ccday})/2 + C_s \times (8 \times {\rm dimh} + {\rm gap\_iny} + {\rm ccdpy} - {\rm ccday}) + (S_s + 1) \times {\rm dimh} + 1  - {\rm preh} \\
-& {\tt CRVAL2Q} = S_p \times (2 \times {\rm dimv} + 1) +  {\rm gap\_outx} + ({\rm ccdpx} - {\rm ccdax})/2 + C_p \times ( 2 \times {\rm dimv} + {\rm gap\_inx} + {\rm ccdpx} - {\rm ccdax}) \\
+& {\tt CRVAL1Q} = 2 \times S_y \times {\rm dimh} + 1 - {\rm preh} + S_x \times {\rm dimv} + ({\rm ccdpy} - {\rm ccday})/2 \\
+& {\tt CRVAL2Q} =1 - {\rm preh} + (7-S_y) \times {\rm dimh} + {\rm overh} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} \\
 \end{align*}
-%\caption{Definitions of WCS coordinate transformation keywords for ITL sensors\label{tab:itlwcs}}
-%\end{table}
+
 
 \subsection{Other WCS Header Keywords \label{sec:coords_ifl}}
 
