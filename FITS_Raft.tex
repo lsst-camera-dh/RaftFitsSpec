@@ -1369,7 +1369,7 @@ The following equations define the WCS coordinate keyword values for the {\bf W0
 & {\tt PC2\_1Q} = -1 & \\
 & {\tt PC2\_2Q} = 0 & \\ 
 & {\tt CRVAL1Q} = 1 + {\rm crdim} + {\rm overhang} - {\rm ccdpy}/2 + ({\rm ccdpx} + {\rm ccdax})/4 & \\
-& {\tt CRVAL2Q} = 1 - {\rm preh} + (S_s + 1) \times {\rm dimh} + 1 + {\rm crdim} {\rm overhang}- {\rm yoff1} - {\rm ccdpx} - ({\rm ccdpx} - {\rm ccdax})/2 &  \\
+& {\tt CRVAL2Q} = 1 - {\rm preh} + (S_s + 1) \times {\rm dimh} + 1 + {\rm crdim} + {\rm overhang}- {\rm yoff1} - {\rm ccdpx} - ({\rm ccdpx} - {\rm ccdax})/2 &  \\
 \end{flalign*}
 
 The following equations define the WCS coordinate keyword values for the {\bf W1} sensor in corner raft {\bf R04}: 
@@ -1474,14 +1474,14 @@ The following equations define the WCS coordinate keyword values for the {\bf G1
 & {\tt PC1\_2R} = 0 & \\
 & {\tt PC2\_1R} = 0 & \\
 & {\tt PC2\_2R} = 2 \times S_x  - 1 & \\
-& {\tt CRVAL1R} = 1 - {\rm preh}  + (8 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm yoff1} + {\rm yoff2} + {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2 & \\
-& {\tt CRVAL2R} =  1 + 2 \times (1 - S_y) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2  & \\
+& {\tt CRVAL1R} = 1 - {\rm preh}  + (8 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm yoff1} + {\rm yoff2} + {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2 & \\
+& {\tt CRVAL2R} =  1 + 2 \times (1 - S_y) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2  & \\
 & {\tt PC1\_1F} = -1 & \\
 & {\tt PC1\_2F} = 0 & \\
 & {\tt PC2\_1F} = 0 & \\
 & {\tt PC2\_2F} =  2 \times S_x - 1 & \\
-& {\tt CRVAL1F} = 1 - {\rm preh}  + (7 - S_y) \times {\rm dimh} + {\rm crdim} + {\rm overhang} - {\rm yoff1} - {\rm yoff2} - {\rm ccdpy} - ({\rm ccdpx} - {\rm ccdax})/2 + R_x \times {\rm raftx} & \\ 
-& {\tt CRVAL2F} =  1 + 2 \times S_x \times {\rm dimv} + R_y \times {\rm rafty} & \\  
+& {\tt CRVAL1F} = 1 - {\rm preh}  + (8 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm yoff1} + {\rm yoff2} + {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2 + R_x \times {\rm raftx} & \\ 
+& {\tt CRVAL2F} =  1 + 2 \times (1 - S_y) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2 + R_y \times {\rm rafty} & \\  
 & {\tt PC1\_1B} = 0 & \\
 & {\tt PC1\_2B} = 1 - 2 \times S_p  & \\
 & {\tt PC2\_1B} = -1 & \\
@@ -1597,13 +1597,13 @@ The following equations define the WCS coordinate keyword values for the {\bf G0
 & {\tt PC1\_2R} = 0 & \\
 & {\tt PC2\_1R} = 0 & \\
 & {\tt PC2\_2R} = 1 - 2 \times S_x & \\
-& {\tt CRVAL1R} = 1 - {\rm preh} + (7-S_y) \times {\rm dimh} + {\rm overh} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} & \\  
+& {\tt CRVAL1R} = 1 - {\rm preh} + (7-S_y) \times {\rm dimh} + {\rm overhang} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} & \\  
 & {\tt CRVAL2R} = 2 \times S_x \times {\rm dimv} + 1 + ({\rm ccdpy} - {\rm ccday})/2 & \\ 
 & {\tt PC1\_1F} = 1 & \\
 & {\tt PC1\_2F} = 0 & \\
 & {\tt PC2\_1F} = 0 & \\
 & {\tt PC2\_2F} = 1 - 2 \times S_x & \\
-& {\tt CRVAL1F} = 1 - {\rm preh} + (7 - S_y) \times {\rm dimh} + {\rm overh} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} + R_x \times {\rm raftx} &  \\ 
+& {\tt CRVAL1F} = 1 - {\rm preh} + (7 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm ccday} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} + R_x \times {\rm raftx} &  \\ 
 & {\tt CRVAL2F} = 2 \times S_x \times {\rm dimv} + 1 + ({\rm ccdpy} - {\rm ccday})/2 + R_y \times {\rm rafty} & \\  
 & {\tt PC1\_1B} = 0 & \\
 & {\tt PC1\_2B} = -1 + 2 \times S_p & \\
