@@ -64,6 +64,8 @@
 \section{Change History}
 Draft in progress. % \red{Open issues are highlighted in red.}\
 
+\red{16 Sep 2019: Fixed some equations for corner raft keyword values}
+\red{22 Aug 2019:  Updated Table 1 to include slot designators for corner raft sensors}
 \red{16 Aug 2019:  Added complete specifications of header keywords for all sensors of each corner raft.  Switched to new G0, G1, W0, W1 notation for guide and wavefront sensors.}
 
 \red{28 June 2019:  Added pixel coordinate systems and header keywords for corner rafts.}
@@ -152,7 +154,7 @@ The naming convention is:
 
 %\red{{\bf rafts/<institution>/sraft<raft number>/<acquisition type>/<job ID>/s<CCD number>} }
 
-\red{{\bf .../<raft ID>/<run ID>/<acquisition type>/<test version>/<job ID>/S<2-digit location in raft>}}
+{\bf .../<raft ID>/<run ID>/<acquisition type>/<test version>/<job ID>/S<2-digit location in raft>}
 
 The components of the path are described in Table~\ref{tab:dir}; {\red {\bf <acquisition type> is not specified here; conventionally the name of the corresponding LCATR harnessed job is used.}  The run ID is assigned by the eTraveler system and is the same for all harnessed jobs run by any given traveler.  The job ID is assigned by the job harness system and is different for every harnessed job executed.  
 
@@ -163,19 +165,19 @@ The components of the path are described in Table~\ref{tab:dir}; {\red {\bf <acq
 
 \begin{table}
 \begin{centering}
-\begin{tabular}{| l | l |}
+\begin{tabular}{| l | p{9cm} |}
 \hline
 {\bf Quantity} & {\bf Description} \\
 \hline
 %{\bf rafts} & A designator to distinguish from {\bf CCDs} for single-sensor data sets \\
 %{\bf <institution>} & {\bf bnl} or {\bf slac} \\
 %{\bf sraft<\#\#>} & Designator of the science raft (each \# = 0--4) \\
-{\bf <raft ID>} & Hardware ID of the raft \red{e.g., LCA-10753\_RSA-003\_ETU1} \\
+{\bf <raft ID>} & Hardware ID of the raft, e.g., LCA-10753\_RSA-003\_ETU1 \\
 {\bf <run ID>} & Run number assigned by the eTraveler \\
 %{\bf <acquisition type>} & {\bf dark\_acq, fe55\_acq, flat\_acq, lambda\_acq, ppump\_acq, qe\_acq, read\_noise, spot\_acq} \\
 {\bf <test version>} & Version designator (required by the Job Harness), typically `v0' \\
 {\bf <job ID>} & Job ID number assigned by the Job Harness \\
-{\bf <S\#\#>} & Location designator of the sensor in the raft (each \# = 0--2) \\
+{\bf <S\#\#>} & Location designator of the sensor in the raft \red{(for science rafts, each \# = 0--2; for corner rafts \#\# = G0, G1, W0, or W1 for the guider and wavefront sensors)} \\
 \hline
 \end{tabular}
 \caption{Definitions of the components of the directory names for image data.\label{tab:dir}}
@@ -216,9 +218,9 @@ The file names for a given sensor, test type, and processing step shall be of th
 \end{centering}
 \end{table}
 
-\red{An example with the desired directory path:}
+An example with the desired directory path:
 
-\red{{\tt .../LCA-10753\_RSA-003\_ETU1/1234/dark\_acq/v0/36123/S12/ \\ E2V-CCD250-088\_dark\_dark\_003\_1234\_20160121191343.fits}}
+{\tt .../LCA-10753\_RSA-003\_ETU1/1234/dark\_acq/v0/36123/S12/ \\ E2V-CCD250-088\_dark\_dark\_003\_1234\_20160121191343.fits}}
 
 \red{Here the sequence number is 003, the run ID is 1234, and the time stamp is 20160121191343.  Please do not assume that the job ID (36123 here) is limited to 5 digits, or that the run ID (1234 here) is limited to four.  In addition, for data taken with `development' versions of harnessed jobs, the run ID will have a `D' appended (e.g., `1234D').  The sequence number is specified to be three digits, and is not expected to exceed 999.}
 
@@ -1275,7 +1277,7 @@ The following equations define the WCS coordinate keyword values for the {\bf G0
 & {\tt PC1\_2F} = -1 + 2 \times S_x & \\
 & {\tt PC2\_1F} = 1 & \\
 & {\tt PC2\_2F} = 0 & \\
-& {\tt CRVAL1F} = 1 + 2 \times (1 - S_y) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2 + R_x \times {\rm raftx} &  \\ 
+& {\tt CRVAL1F} = 1 + 2 \times (1 - S_x) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2 + R_x \times {\rm raftx} &  \\ 
 & {\tt CRVAL2F} = 1 - {\rm preh} + (7 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm ccdpy} + {\rm xoff1} + {\rm xoff2} + ({\rm ccdpx} - {\rm ccdax}) + R_y \times {\rm rafty} & \\  
 & {\tt PC1\_1B} = -1 & \\
 & {\tt PC1\_2B} =  0 & \\
@@ -1475,13 +1477,13 @@ The following equations define the WCS coordinate keyword values for the {\bf G1
 & {\tt PC2\_1R} = 0 & \\
 & {\tt PC2\_2R} = 2 \times S_x  - 1 & \\
 & {\tt CRVAL1R} = 1 - {\rm preh}  + (8 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm yoff1} + {\rm yoff2} + {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2 & \\
-& {\tt CRVAL2R} =  1 + 2 \times (1 - S_y) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2  & \\
+& {\tt CRVAL2R} =  1 + 2 \times (1 - S_x) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2  & \\
 & {\tt PC1\_1F} = -1 & \\
 & {\tt PC1\_2F} = 0 & \\
 & {\tt PC2\_1F} = 0 & \\
 & {\tt PC2\_2F} =  2 \times S_x - 1 & \\
 & {\tt CRVAL1F} = 1 - {\rm preh}  + (8 - S_y) \times {\rm dimh} + {\rm overhang} + {\rm yoff1} + {\rm yoff2} + {\rm ccdpy} + ({\rm ccdpy} - {\rm ccday})/2 + R_x \times {\rm raftx} & \\ 
-& {\tt CRVAL2F} =  1 + 2 \times (1 - S_y) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2 + R_y \times {\rm rafty} & \\  
+& {\tt CRVAL2F} =  1 + 2 \times (1 - S_x) \times {\rm dimv} + {\rm crdim} + {\rm overhang} - {\rm ccdpx} + ({\rm ccdpx} - {\rm ccdax})/2 + R_y \times {\rm rafty} & \\  
 & {\tt PC1\_1B} = 0 & \\
 & {\tt PC1\_2B} = 1 - 2 \times S_p  & \\
 & {\tt PC2\_1B} = -1 & \\
@@ -1610,13 +1612,13 @@ The following equations define the WCS coordinate keyword values for the {\bf G0
 & {\tt PC2\_1B} = 1 &  \\
 & {\tt PC2\_2B} = 0 &  \\
 & {\tt CRVAL1B} = 2 \times (S_p - 1) \times {\rm dimv} + 1  & \\ 
-& {\tt CRVAL2B} = 1 - {\rm preh} + (7 - S_p) \times {\rm dimh} & \\
+& {\tt CRVAL2B} = 1 - {\rm preh} + (7 - S_s) \times {\rm dimh} & \\
 & {\tt PC1\_1Q} = 0  &  \\
 & {\tt PC1\_2Q} = -1 + 2 \times S_p & \\
 & {\tt PC2\_1Q} = 1 & \\
 & {\tt PC2\_2Q} = 0  & \\
 & {\tt CRVAL1Q} =  2 \times (S_p - 1) \times {\rm dimv} + 1 + {\rm crdim} - {\rm ccdpy} & \\
-& {\tt CRVAL2Q} = 1 - {\rm preh} + (7-S_p) \times {\rm dimh} +  {\rm ccdpy} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} &  \\
+& {\tt CRVAL2Q} = 1 - {\rm preh} + (7 - S_s) \times {\rm dimh} +  {\rm ccdpy} + ({\rm ccdpx} - {\rm ccdax})/2 + {\rm xoff1} + {\rm xoff2} &  \\
 \end{flalign*}
 
 The following equations define the WCS coordinate keyword values for the {\bf G1} sensor in corner raft {\bf R44}:
